@@ -3,211 +3,210 @@
 <head>
 <meta charset="utf-8" />
 <meta name="robots" content="noindex, nofollow" />
-<title>measuring</title>
+<title>probe</title>
 <style>
-  body { margin: 0; background: #fff; color: #111; font: 15px/1.5 ui-monospace, Menlo, monospace; }
-  .box { padding: 10px 12px; }
-  h1 { font-size: 18px; margin: 0 0 6px; }
-  .line { white-space: pre-wrap; }
+  body { margin: 0; background: #fff; color: #111; font: 14px/1.45 ui-monospace, Menlo, monospace; }
+  #out { padding: 8px 10px; }
   iframe { border: 0; display: block; }
 </style>
 </head>
 <body>
-<div class="box" id="out">measuring…</div>
+<pre id="out">measuring…</pre>
 <script>
 (function () {
   "use strict";
-  var SIZES = [{ w: 390, h: 844 }, { w: 375, h: 812 }];
+  var KEY = "ayun.missionboard.v1";
   var lines = [];
   var summary = [];
-
-  function log(s) { lines.push(s); render(); }
-  function render() { document.getElementById("out").textContent = lines.join("\n"); }
-
+  function log(s) { lines.push(s); document.getElementById("out").textContent = lines.join("\n"); }
+  function wait(ms) { return new Promise(function (r) { setTimeout(r, ms); }); }
   function pad(n) { return (n < 10 ? "0" : "") + n; }
-  function todayKey() {
-    var d = new Date();
-    return d.getFullYear() + "-" + pad(d.getMonth() + 1) + "-" + pad(d.getDate());
-  }
+  function todayKey() { var d = new Date(); return d.getFullYear() + "-" + pad(d.getMonth() + 1) + "-" + pad(d.getDate()); }
   function todayLabel() { var d = new Date(); return (d.getMonth() + 1) + "/" + d.getDate(); }
   function todayDay() { return new Date().getDay(); }
 
   function mkFrame(w, h) {
     var f = document.createElement("iframe");
     f.style.cssText = "width:" + w + "px;height:" + h + "px;border:0";
-    f.src = "./index.html?probe=" + Date.now();
+    f.src = "./index.html?probe=" + Date.now() + Math.random();
     return f;
   }
-  function wait(ms) { return new Promise(function (r) { setTimeout(r, ms); }); }
   function load(f) { return new Promise(function (r) { f.onload = function () { r(); }; }); }
-
-  function wideElements(d, win) {
-    var out = [];
-    var all = d.querySelectorAll("*");
-    for (var i = 0; i < all.length; i++) {
-      var el = all[i];
-      var r = el.getBoundingClientRect();
-      if (r.width > 0 && (r.right > win.innerWidth + 0.5 || r.left < -0.5)) {
-        var cls = el.className;
-        if (cls && cls.baseVal !== undefined) cls = cls.baseVal;
-        out.push(el.tagName + "." + cls + "[" + r.left.toFixed(0) + "," + r.right.toFixed(0) + "]");
-      }
-    }
-    return out.slice(0, 6);
-  }
+  function click(el) { el.dispatchEvent(new MouseEvent("click", { bubbles: true, cancelable: true, view: window })); }
 
   async function measureStage() {
-    for (var i = 0; i < SIZES.length; i++) {
-      var s = SIZES[i];
+    var sizes = [{ w: 390, h: 844 }, { w: 375, h: 812 }];
+    for (var i = 0; i < sizes.length; i++) {
+      var s = sizes[i];
       var f = mkFrame(s.w, s.h);
       document.body.appendChild(f);
       await load(f);
-      await wait(1600);
+      await wait(900);
       var d = f.contentDocument, win = f.contentWindow;
-      var docSw = d.documentElement.scrollWidth;
-      var bodySw = d.body.scrollWidth;
-      var ov = docSw - win.innerWidth;
-      var wide = wideElements(d, win);
-      var cols = getComputedStyle(d.getElementById("board")).gridTemplateColumns;
-      summary.push(s.w + "px:overflow=" + ov);
-      log("[폭 " + s.w + "px] innerWidth=" + win.innerWidth + " scrollWidth=" + docSw +
-          " body.scrollWidth=" + bodySw + " overflow=" + ov +
-          "\n   넘치는 요소: " + (wide.length ? wide.join(" | ") : "없음") +
-          "\n   스티커판 열: " + cols + " · 미션 " + d.querySelectorAll(".mission").length +
-          "개 · 칸 " + d.querySelectorAll(".cell").length + "개 · 문서 높이 " + d.documentElement.scrollHeight);
+      var wide = [];
+      var all = d.querySelectorAll("*");
+      for (var j = 0; j < all.length; j++) {
+        var el = all[j], r = el.getBoundingClientRect();
+        if (r.width > 0 && (r.right > win.innerWidth + 0.5 || r.left < -0.5)) {
+          var cls = el.className;
+          if (cls && cls.baseVal !== undefined) cls = cls.baseVal;
+          wide.push(el.tagName + "." + cls);
+        }
+      }
+      var ov = d.documentElement.scrollWidth - win.innerWidth;
+      summary.push(s.w + "px:" + (ov <= 0 ? "OK" : "OVERFLOW" + ov));
+      log("[폭 " + s.w + "px] innerWidth=" + win.innerWidth +
+          "  scrollWidth=" + d.documentElement.scrollWidth +
+          "  body.scrollWidth=" + d.body.scrollWidth +
+          "  overflow=" + ov +
+          "\n    넘친 요소: " + (wide.length ? wide.slice(0, 5).join(", ") : "없음") +
+          "\n    스티커판 열: " + getComputedStyle(d.getElementById("board")).gridTemplateColumns +
+          " · 미션 " + d.querySelectorAll(".mission").length +
+          " · 칸 " + d.querySelectorAll(".cell").length +
+          " · 문서높이 " + d.documentElement.scrollHeight);
       f.parentNode.removeChild(f);
     }
   }
 
-  function click(el) {
-    el.dispatchEvent(new MouseEvent("click", { bubbles: true, cancelable: true, view: window }));
-  }
+  function read(d, id) { return d.getElementById(id); }
 
   async function functionalStage() {
-    var KEY = "ayun.missionboard.v1";
+    try { localStorage.clear(); } catch (e) {}
     var f = mkFrame(390, 844);
     document.body.appendChild(f);
     await load(f);
-    await wait(1200);
+    await wait(800);
     var d = f.contentDocument, win = f.contentWindow;
     var pass = 0, fail = 0;
     function check(name, cond, extra) {
       if (cond) { pass++; log("  ✓ " + name); }
-      else { fail++; log("  ✗ " + name + (extra ? " — " + extra : "")); }
+      else { fail++; log("  ✗ " + name + (extra !== undefined ? "  [" + extra + "]" : "")); }
     }
 
-    log("\n[기능 검사 · 실제 페이지 코드]");
-    try { win.localStorage.clear(); } catch (e) {}
-    f.contentWindow.location.reload();
-    await load(f);
-    await wait(1000);
-
+    log("\n[기능 검사]");
     check("제목", d.title === "아윤 공주의 미션 대작전", d.title);
     check("localStorage 키", Object.keys(win.localStorage).indexOf(KEY) !== -1, Object.keys(win.localStorage).join(","));
-    check("오늘 요일 자동 선택", win.__ayun.viewDay() === todayDay(), String(win.__ayun.viewDay()));
-    check("미션 5개", d.querySelectorAll(".mission").length === 5, String(d.querySelectorAll(".mission").length));
+    check("다른 보드 키 없음(재윤)", Object.keys(win.localStorage).indexOf("jaeyun.missionboard.v1") === -1);
+    check("오늘 요일 자동 선택", win.__ayun.viewDay() === todayDay(), win.__ayun.viewDay());
+    check("미션 5개", d.querySelectorAll(".mission").length === 5);
     check("요일 탭 7개", d.querySelectorAll("#dayTabs .day-tab").length === 7);
     check("스티커판 30칸", d.querySelectorAll(".cell").length === 30);
-    check("처음엔 스티커 버튼 잠김", d.getElementById("stickerBtn").disabled === true);
+    check("초기 스티커 버튼 잠김", read(d, "stickerBtn").disabled === true);
+    check("보상 문구", read(d, "rewardText").textContent === "5,000원 받기", read(d, "rewardText").textContent);
 
     var names = [];
     d.querySelectorAll(".mission-name").forEach(function (n) { names.push(n.textContent); });
     check("미션 이름", names.join("|") === "2세수학 3장|책 3권 독서|슈퍼매직파닉스|사이트워드|영어독서", names.join("|"));
-    var firstSteps = d.querySelectorAll(".mission")[0].querySelectorAll(".step").length;
-    check("2세수학 3단계", firstSteps === 3, String(firstSteps));
+    var m0 = d.querySelectorAll(".mission")[0];
+    var m1 = d.querySelectorAll(".mission")[1];
+    check("2세수학 3단계", m0.querySelectorAll(".step").length === 3);
+    check("책 3권 3단계", m1.querySelectorAll(".step").length === 3);
+    check("슈퍼매직파닉스 단일 체크", d.querySelectorAll(".mission")[2].querySelectorAll(".step").length === 0);
 
-    // 1단계만 체크
-    var chips = d.querySelectorAll(".mission")[0].querySelectorAll(".step");
-    click(chips[0]);
-    await wait(300);
-    check("부분 체크 표시 1/3", d.querySelectorAll(".mission")[0].querySelector(".tick").textContent === "1/3",
-      d.querySelectorAll(".mission")[0].querySelector(".tick").textContent);
+    click(m0.querySelectorAll(".step")[0]);
+    await wait(120);
+    check("부분 체크 1/3", m0.querySelector(".tick").textContent === "1/3", m0.querySelector(".tick").textContent);
 
-    // 모든 미션 체크
-    for (var round = 0; round < 4; round++) {
+    click(m0);
+    await wait(150);
+    check("카드 클릭 = 전체 체크", m0.classList.contains("done"), m0.className);
+
+    for (var round = 0; round < 3; round++) {
       var cards = d.querySelectorAll(".mission");
       for (var i = 0; i < cards.length; i++) {
         if (!cards[i].classList.contains("done")) click(cards[i]);
       }
-      await wait(250);
+      await wait(120);
     }
-    check("진행 5 / 5", d.getElementById("missionProgress").textContent === "5 / 5", d.getElementById("missionProgress").textContent);
-    check("스티커 버튼 켜짐", d.getElementById("stickerBtn").disabled === false && d.getElementById("stickerBtn").classList.contains("ready"));
+    check("진행 5 / 5", read(d, "missionProgress").textContent === "5 / 5", read(d, "missionProgress").textContent);
+    check("준비 상태 버튼", read(d, "stickerBtn").disabled === false && read(d, "stickerBtn").classList.contains("ready"));
 
-    // 스티커 받기
-    click(d.getElementById("stickerBtn"));
-    await wait(700);
-    var filled = d.querySelectorAll(".cell.filled").length;
-    check("스티커 1개 찍힘", filled === 1, String(filled));
+    click(read(d, "stickerBtn"));
+    await wait(500);
+    check("스티커 1개", d.querySelectorAll(".cell.filled").length === 1, d.querySelectorAll(".cell.filled").length);
     var pill = d.querySelector(".cell-date");
-    check("날짜 표시 " + todayLabel(), !!pill && pill.textContent === todayLabel(), pill ? pill.textContent : "none");
-    check("스티커판 1 / 30", d.getElementById("boardProgress").textContent === "1 / 30", d.getElementById("boardProgress").textContent);
-    check("하루 1회 제한", win.__ayun.hasTodaySticker() === true);
+    check("날짜 표시 " + todayLabel(), !!pill && pill.textContent === todayLabel(), pill && pill.textContent);
+    check("판 진행 1 / 30", read(d, "boardProgress").textContent === "1 / 30", read(d, "boardProgress").textContent);
+    check("오늘 스티커 기록", win.__ayun.hasTodaySticker() === true);
+    var artUse = d.querySelector(".cell.filled .stamp-art use");
+    check("SVG 캐릭터 도장(href)", !!artUse && (artUse.getAttribute("href") || "").indexOf("#face-") === 0, artUse && artUse.getAttribute("href"));
 
-    // 미리보기 잠금
+    click(read(d, "stickerBtn"));
+    await wait(300);
+    check("하루 1회 제한", d.querySelectorAll(".cell.filled").length === 1);
+
     var tabs = d.querySelectorAll("#dayTabs .day-tab");
     var other = null;
     for (var t = 0; t < tabs.length; t++) { if (!tabs[t].classList.contains("on")) { other = tabs[t]; break; } }
     click(other);
-    await wait(300);
-    check("다른 요일 미리보기 안내", d.getElementById("previewNote").hidden === false);
+    await wait(200);
+    check("다른 요일 미리보기 안내", read(d, "previewNote").hidden === false);
     check("미리보기 체크 잠금", d.querySelectorAll("#missionList.preview").length === 1);
     var before = JSON.stringify(win.__ayun.getState().checks);
     click(d.querySelectorAll(".mission")[0]);
-    await wait(250);
+    await wait(150);
     check("미리보기 클릭 무시", JSON.stringify(win.__ayun.getState().checks) === before);
 
-    // 엄마 설정 게이트
-    click(d.getElementById("momBtn"));
-    await wait(300);
-    check("엄마 설정 잠금", d.getElementById("gateWrap").hidden === false);
-    var q = d.getElementById("gateQuestion").textContent.replace(/[^0-9+]/g, "");
-    var parts = q.split("+");
-    var answer = parseInt(parts[0], 10) + parseInt(parts[1], 10);
-    var ansInput = d.getElementById("gateAnswer");
-    ansInput.value = String(answer + 1);
-    click(d.getElementById("gateOkBtn"));
-    await wait(300);
-    check("틀린 답은 막힘", d.getElementById("settingsWrap").hidden === true);
-    ansInput.value = String(answer);
-    click(d.getElementById("gateOkBtn"));
-    await wait(500);
-    check("맞는 답에 설정 열림", d.getElementById("settingsWrap").hidden === false);
-
-    // +1 / -1
-    click(d.getElementById("plusStickerBtn"));
-    await wait(300);
-    check("+1 보충", d.getElementById("boardProgress").textContent === "2 / 30", d.getElementById("boardProgress").textContent);
-    click(d.getElementById("minusStickerBtn"));
-    await wait(300);
-    check("−1 취소", d.getElementById("boardProgress").textContent === "1 / 30", d.getElementById("boardProgress").textContent);
-
-    // 백업
-    click(d.getElementById("exportBtn"));
+    click(read(d, "momBtn"));
     await wait(200);
-    var txt = d.getElementById("backupBox").value;
+    check("엄마 설정 잠금", read(d, "gateWrap").hidden === false);
+    var q = read(d, "gateQuestion").textContent.replace(/[^0-9+]/g, "");
+    var ab = q.split("+");
+    var answer = parseInt(ab[0], 10) + parseInt(ab[1], 10);
+    check("한 자리 덧셈 문제", ab.length === 2 && parseInt(ab[0], 10) < 10 && parseInt(ab[1], 10) < 10, q);
+    read(d, "gateAnswer").value = String(answer + 1);
+    click(read(d, "gateOkBtn"));
+    await wait(200);
+    check("틀린 답 차단", read(d, "settingsWrap").hidden === true);
+    read(d, "gateAnswer").value = String(answer);
+    click(read(d, "gateOkBtn"));
+    await wait(400);
+    check("맞는 답에 설정 열림", read(d, "settingsWrap").hidden === false);
+
+    click(read(d, "plusStickerBtn"));
+    await wait(200);
+    check("+1 보충", read(d, "boardProgress").textContent === "2 / 30", read(d, "boardProgress").textContent);
+    click(read(d, "minusStickerBtn"));
+    await wait(200);
+    check("−1 취소", read(d, "boardProgress").textContent === "1 / 30", read(d, "boardProgress").textContent);
+
+    click(read(d, "exportBtn"));
+    await wait(150);
     var okJson = false;
-    try { okJson = JSON.parse(txt).board.length === 1; } catch (e) { okJson = false; }
+    try { okJson = JSON.parse(read(d, "backupBox").value).board.length === 1; } catch (e) { okJson = false; }
     check("JSON 내보내기", okJson);
 
-    // 편집: 화요일에 미션 추가 후 그 요일만 바뀌는지
     var editTabs = d.querySelectorAll("#editDayTabs .day-tab");
     for (var e2 = 0; e2 < editTabs.length; e2++) {
       if (editTabs[e2].getAttribute("data-day") === "2") { click(editTabs[e2]); break; }
     }
+    await wait(200);
+    read(d, "newMissionName").value = "받아쓰기";
+    click(read(d, "addMissionBtn"));
     await wait(250);
-    d.getElementById("newMissionName").value = "받아쓰기";
-    click(d.getElementById("addMissionBtn"));
-    await wait(300);
     var st = win.__ayun.getState();
-    check("요일별 편집(화요일 6개)", st.schedule["2"].length === 6, String(st.schedule["2"].length));
-    check("다른 요일 그대로(월 5개)", st.schedule["1"].length === 5, String(st.schedule["1"].length));
+    check("요일별 추가(화 6개)", st.schedule["2"].length === 6, st.schedule["2"].length);
+    check("월요일은 5개 유지", st.schedule["1"].length === 5, st.schedule["1"].length);
 
-    var s2 = "../";
-    log("\n결과: " + pass + " 통과 / " + fail + " 실패");
-    summary.push("tests=" + pass + "/" + (pass + fail));
+    read(d, "titleInput").value = "테스트 제목";
+    read(d, "titleInput").dispatchEvent(new Event("input", { bubbles: true }));
+    await wait(400);
+    check("제목 수정 반영", read(d, "heroTitle").textContent === "테스트 제목", read(d, "heroTitle").textContent);
+
+    read(d, "rewardInput").value = "3,000원 받기";
+    read(d, "rewardInput").dispatchEvent(new Event("input", { bubbles: true }));
+    await wait(400);
+    check("보상 수정 반영", read(d, "boardRewardNote").textContent === "3,000원 받기", read(d, "boardRewardNote").textContent);
+
+    click(read(d, "fullResetBtn"));
+    await wait(150);
+    click(read(d, "fullResetBtn"));
+    await wait(400);
+    check("전체 초기화", read(d, "boardProgress").textContent === "0 / 30" && win.__ayun.getState().boardsDone === 0, read(d, "boardProgress").textContent);
+
+    log("\n결과 " + pass + " / " + (pass + fail));
+    summary.push("test:" + pass + "/" + (pass + fail));
     f.parentNode.removeChild(f);
-    return fail;
   }
 
   (async function () {
@@ -219,6 +218,10 @@
       summary.push("error");
     }
     document.title = "RESULT " + summary.join(" | ");
+    var fin = document.createElement("div");
+    fin.id = "finished";
+    fin.textContent = "FINISHED " + summary.join(" | ");
+    document.body.appendChild(fin);
   })();
 })();
 </script>
