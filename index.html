@@ -1,0 +1,2705 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<meta name="robots" content="noindex, nofollow" />
+<meta name="theme-color" content="#0b1231" />
+<title>출동! 재윤 대원의 미션 대작전</title>
+<meta name="description" content="출동! 재윤 대원의 미션 대작전 — 오늘의 미션을 체크하고 어벤져스 스티커를 모으는 칭찬 스티커판." />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Jua&family=Noto+Sans+KR:wght@500;700;900&display=swap" rel="stylesheet" />
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='46' fill='%23e62429'/%3E%3Cpath d='M34 74 L50 26 L66 74 M40 60 H60' stroke='%23fff' stroke-width='7' fill='none' stroke-linecap='round'/%3E%3C/svg%3E" />
+<style>
+/* ===================================================================
+   출동! 재윤 대원의 미션 대작전 · 어벤져스 미션 & 스티커판
+   - 서버 없음. 모든 기록은 이 브라우저의 localStorage 에만 저장됩니다.
+   - 개인정보는 화면 제목 외에 어디에도 넣지 않습니다.
+   =================================================================== */
+
+:root {
+  --navy-900: #070c22;
+  --navy-800: #0b1231;
+  --navy-700: #131d48;
+  --red: #e62429;
+  --red-deep: #a01015;
+  --gold: #ffc93c;
+  --gold-deep: #c98d00;
+  --cyan: #4fd1ff;
+  --cyan-deep: #0b7fa8;
+  --blue: #2f6bff;
+  --blue-deep: #1a3fb0;
+  --green: #2fbf71;
+  --green-deep: #1c8e51;
+  --purple: #8b5cf6;
+  --paper: #fffdf7;
+  --cream: #fff6e2;
+  --cream-2: #ffefd2;
+  --ink: #1a2244;
+  --ink-soft: #5f6a8c;
+  --line: #ece5f5;
+  --radius: 24px;
+  --shadow-card: 0 4px 0 rgba(4, 8, 24, 0.45), 0 12px 26px rgba(3, 6, 20, 0.5);
+  --shadow-soft: 0 3px 0 rgba(4, 8, 24, 0.35), 0 8px 18px rgba(3, 6, 20, 0.4);
+  --font-title: "Jua", "Noto Sans KR", "Malgun Gothic", system-ui, sans-serif;
+  --font-body: "Noto Sans KR", system-ui, -apple-system, "Malgun Gothic", "Apple SD Gothic Neo", sans-serif;
+}
+
+* { box-sizing: border-box; }
+
+/* hidden 속성이 display 값에 눌리지 않도록 */
+[hidden] { display: none !important; }
+
+html { -webkit-text-size-adjust: 100%; }
+
+body {
+  margin: 0;
+  min-height: 100%;
+  font-family: var(--font-body);
+  color: #e7ecff;
+  background: var(--navy-800);
+  overflow-x: hidden;
+  -webkit-tap-highlight-color: transparent;
+}
+
+button, .mission { touch-action: manipulation; }
+
+.sprite { position: absolute; width: 0; height: 0; overflow: hidden; }
+
+/* ===== 배경 (히어로 본부) ===== */
+.bg {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  overflow: hidden;
+  background:
+    radial-gradient(115% 50% at 50% -8%, rgba(79, 209, 255, 0.32) 0%, rgba(79, 209, 255, 0) 62%),
+    radial-gradient(85% 38% at 50% 6%, rgba(255, 201, 60, 0.18) 0%, rgba(255, 201, 60, 0) 72%),
+    linear-gradient(180deg, #0a1030 0%, #121c48 40%, #0a0f2a 100%);
+}
+.bg::before {
+  content: "";
+  position: absolute;
+  inset: -20% -20% auto -20%;
+  height: 130%;
+  background-image:
+    linear-gradient(rgba(120, 170, 255, 0.09) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(120, 170, 255, 0.09) 1px, transparent 1px);
+  background-size: 34px 34px;
+  -webkit-mask-image: radial-gradient(72% 58% at 50% 26%, #000 15%, transparent 76%);
+  mask-image: radial-gradient(72% 58% at 50% 26%, #000 15%, transparent 76%);
+}
+.bg::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image:
+    radial-gradient(1.5px 1.5px at 14% 12%, rgba(255, 255, 255, 0.8) 50%, transparent 51%),
+    radial-gradient(1.2px 1.2px at 78% 9%, rgba(255, 255, 255, 0.6) 50%, transparent 51%),
+    radial-gradient(1.6px 1.6px at 88% 26%, rgba(120, 210, 255, 0.75) 50%, transparent 51%),
+    radial-gradient(1.2px 1.2px at 32% 4%, rgba(255, 255, 255, 0.55) 50%, transparent 51%),
+    radial-gradient(1.4px 1.4px at 6% 34%, rgba(255, 201, 60, 0.6) 50%, transparent 51%),
+    radial-gradient(1.2px 1.2px at 62% 16%, rgba(255, 255, 255, 0.5) 50%, transparent 51%),
+    radial-gradient(1.3px 1.3px at 94% 44%, rgba(255, 255, 255, 0.45) 50%, transparent 51%);
+}
+
+/* ===== 레이아웃 ===== */
+.app {
+  position: relative;
+  z-index: 1;
+  max-width: 520px;
+  margin: 0 auto;
+  padding: 14px 14px 34px;
+}
+
+.card {
+  color: var(--ink);
+  background: var(--paper);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-card);
+  border: 3px solid #fff;
+}
+
+/* ===== 히어로 ===== */
+.hero {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 6px 0 16px;
+  text-align: center;
+}
+.hero-badge {
+  width: 88px;
+  height: 88px;
+  filter: drop-shadow(0 8px 14px rgba(0, 0, 0, 0.45)) drop-shadow(0 0 18px rgba(230, 36, 41, 0.5));
+  animation: badgeBob 3.4s ease-in-out infinite;
+}
+.hero-title {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 7px;
+  margin: 10px 0 8px;
+  font-family: var(--font-title);
+  line-height: 1.15;
+  letter-spacing: -0.4px;
+}
+.hero-title-label {
+  display: inline-block;
+  padding: 3px 13px 4px;
+  border-radius: 999px;
+  background: linear-gradient(180deg, #ffe08a, var(--gold));
+  border: 2px solid #fff3c9;
+  color: #6a2a00;
+  font-size: 12px;
+  line-height: 1.25;
+  letter-spacing: 2.2px;
+  box-shadow: 0 3px 0 rgba(201, 141, 0, 0.65);
+  white-space: nowrap;
+}
+.hero-title-main {
+  display: block;
+  max-width: 100%;
+  font-size: clamp(20px, 6.2vw, 30px);
+  line-height: 1.22;
+  color: #fff;
+  text-shadow: 0 2px 0 rgba(8, 12, 34, 0.85), 2px 4px 0 rgba(230, 36, 41, 0.55), 0 0 26px rgba(79, 209, 255, 0.4);
+  word-break: keep-all;
+  text-wrap: balance;
+}
+.hero-sub {
+  margin: 0;
+  font-family: var(--font-title);
+  font-size: 15px;
+  color: #a9b8e6;
+}
+.bolt { display: inline-block; animation: boltBlink 1.3s steps(1, end) infinite; }
+
+/* ===== 목표 카드 ===== */
+.goal {
+  display: flex;
+  gap: 11px;
+  align-items: center;
+  padding: 12px 14px 14px;
+  background: linear-gradient(180deg, #fffdf8 0%, #fff6e0 100%);
+  border: 3px solid var(--gold);
+  position: relative;
+  overflow: hidden;
+}
+.goal::after {
+  content: "";
+  position: absolute;
+  inset: auto -22px -38px auto;
+  width: 124px;
+  height: 124px;
+  border-radius: 50%;
+  background: rgba(255, 201, 60, 0.16);
+}
+.goal-reactor { width: 62px; height: 62px; flex: 0 0 auto; }
+.goal-body { flex: 1 1 auto; min-width: 0; position: relative; z-index: 1; }
+.goal-kicker {
+  margin: 0 0 2px;
+  font-size: 11px;
+  font-weight: 900;
+  letter-spacing: 0.06em;
+  color: var(--gold-deep);
+}
+.goal-reward {
+  margin: 0 0 8px;
+  font-family: var(--font-title);
+  font-size: 19px;
+  line-height: 1.25;
+  color: var(--ink);
+  display: flex;
+  gap: 5px;
+  align-items: flex-start;
+  word-break: keep-all;
+}
+.goal-reward .gift { flex: 0 0 auto; }
+.meter {
+  position: relative;
+  height: 22px;
+  border-radius: 999px;
+  background: #efe3c8;
+  box-shadow: inset 0 2px 4px rgba(26, 34, 68, 0.16);
+  overflow: hidden;
+}
+.meter-fill {
+  height: 100%;
+  width: 0%;
+  border-radius: 999px;
+  background: linear-gradient(90deg, var(--cyan), var(--gold), var(--red));
+  transition: width 0.45s cubic-bezier(0.22, 1.2, 0.36, 1);
+}
+.meter-label {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-title);
+  font-size: 13px;
+  color: var(--ink);
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.85);
+}
+
+/* ===== 섹션 헤드 ===== */
+.section-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin: 0 0 10px;
+}
+.section-head h2 {
+  margin: 0;
+  font-family: var(--font-title);
+  font-size: 21px;
+  color: #fff;
+  text-shadow: 0 2px 0 rgba(8, 12, 34, 0.7);
+}
+.card .section-head h2 { color: var(--ink); text-shadow: none; }
+.pill {
+  font-family: var(--font-title);
+  font-size: 15px;
+  color: #fff;
+  background: var(--red);
+  border-radius: 999px;
+  padding: 3px 12px 4px;
+  box-shadow: 0 3px 0 var(--red-deep);
+  white-space: nowrap;
+}
+.pill.blue { background: var(--blue); box-shadow: 0 3px 0 var(--blue-deep); }
+.section-head h2 .day-tag { color: var(--cyan); font-size: 19px; text-shadow: none; }
+
+/* ===== 요일 탭 ===== */
+.day-tabs { display: flex; gap: 6px; margin: 0 0 12px; }
+.day-tab {
+  position: relative;
+  flex: 1 1 0;
+  min-width: 0;
+  border: 2px solid rgba(255, 255, 255, 0.18);
+  border-radius: 15px;
+  background: rgba(255, 255, 255, 0.07);
+  color: #b3c0e8;
+  font-family: var(--font-title);
+  font-size: 16px;
+  line-height: 1;
+  padding: 10px 0 9px;
+  box-shadow: 0 3px 0 rgba(0, 0, 0, 0.35);
+  cursor: pointer;
+  transition: transform 0.1s ease, background 0.15s ease, color 0.15s ease;
+}
+.day-tab .dt-label { display: block; }
+.day-tab .dt-dot {
+  display: block;
+  width: 5px;
+  height: 5px;
+  margin: 4px auto 0;
+  border-radius: 50%;
+  background: var(--gold);
+}
+.day-tab.today {
+  border-color: rgba(255, 201, 60, 0.75);
+  color: #ffe08a;
+  background: rgba(255, 201, 60, 0.12);
+}
+.day-tab.on {
+  background: linear-gradient(180deg, #ff5a5f 0%, var(--red) 100%);
+  border-color: #ffd0d1;
+  color: #fff;
+  box-shadow: 0 3px 0 var(--red-deep), 0 6px 14px rgba(230, 36, 41, 0.35);
+}
+.day-tab.on .dt-dot { background: #fff; }
+.day-tab:active { transform: translateY(2px); box-shadow: 0 1px 0 rgba(0, 0, 0, 0.35); }
+.day-tab:focus-visible { outline: 3px solid rgba(79, 209, 255, 0.65); outline-offset: 2px; }
+
+.preview-note {
+  margin: 0 0 12px;
+  padding: 9px 12px;
+  border-radius: 15px;
+  background: rgba(79, 209, 255, 0.12);
+  border: 2px dashed rgba(79, 209, 255, 0.55);
+  color: #bfeaff;
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 1.45;
+  text-align: center;
+  word-break: keep-all;
+}
+
+/* ===== 미션 ===== */
+.missions { margin: 20px 0 18px; }
+.mission-list { display: flex; flex-direction: column; gap: 10px; }
+.mission {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  min-height: 74px;
+  padding: 12px 13px;
+  border-radius: 22px;
+  color: var(--ink);
+  background: var(--paper);
+  border: 3px solid #fff;
+  box-shadow: var(--shadow-soft);
+  cursor: pointer;
+  user-select: none;
+  transition: transform 0.12s ease, background 0.2s ease, border-color 0.2s ease;
+  position: relative;
+  overflow: hidden;
+}
+.mission:active { transform: scale(0.975); }
+.mission:focus-visible { outline: 4px solid rgba(79, 209, 255, 0.6); outline-offset: 2px; }
+.mission-emoji {
+  font-size: 27px;
+  line-height: 1;
+  width: 44px;
+  height: 44px;
+  flex: 0 0 auto;
+  display: grid;
+  place-items: center;
+  border-radius: 15px;
+  background: var(--cream-2);
+}
+.mission-body { flex: 1 1 auto; min-width: 0; }
+.mission-name {
+  display: block;
+  font-family: var(--font-title);
+  font-size: 21px;
+  line-height: 1.2;
+  color: var(--ink);
+  word-break: keep-all;
+  overflow-wrap: break-word;
+}
+.tick {
+  flex: 0 0 auto;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: 3px dashed #e3d2b8;
+  display: grid;
+  place-items: center;
+  font-size: 23px;
+  font-weight: 900;
+  color: #fff;
+  background: #fffaf0;
+  transition: background 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
+}
+.mission.done {
+  background: linear-gradient(180deg, #ecfbf1 0%, #ddf7e6 100%);
+  border-color: #b9ecc9;
+}
+.tick.partial {
+  border: 3px solid #b9d5ff;
+  background: #eaf2ff;
+  color: var(--blue);
+  font-size: 15px;
+}
+.mission.done .tick {
+  background: var(--green);
+  border: 3px solid var(--green-deep);
+  box-shadow: 0 4px 0 #1a7f48;
+  transform: rotate(-6deg) scale(1.02);
+  animation: tickPop 0.34s cubic-bezier(0.22, 1.4, 0.4, 1);
+}
+.mission.done .mission-name { color: #1c7d49; }
+.mission.done .mission-emoji { background: #cdf2db; }
+
+.steps { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+.step {
+  font-family: var(--font-title);
+  font-size: 16px;
+  min-width: 38px;
+  height: 36px;
+  padding: 0 9px;
+  border-radius: 12px;
+  border: 2px solid #ecdcbf;
+  background: #fffdf6;
+  color: #b8a189;
+  cursor: pointer;
+  box-shadow: 0 3px 0 #efe1c8;
+  transition: transform 0.1s ease, background 0.15s ease;
+}
+.step:active { transform: translateY(2px); box-shadow: 0 1px 0 #efe1c8; }
+.step.on {
+  background: var(--blue);
+  border-color: var(--blue-deep);
+  color: #fff;
+  box-shadow: 0 3px 0 var(--blue-deep);
+}
+.step.on::after { content: "✓"; margin-left: 2px; font-size: 12px; }
+
+.mission-tip {
+  margin: 12px 2px 0;
+  font-size: 13px;
+  color: #a9b8e6;
+  text-align: center;
+  line-height: 1.45;
+}
+.mission-tip strong { color: var(--gold); }
+
+/* 미리보기(다른 요일 보기) — 읽기 전용 */
+.mission-list.preview .mission {
+  cursor: default;
+  pointer-events: none;
+  background: #f4f2fb;
+  border-color: #e6e1f5;
+}
+.mission-list.preview .mission:active { transform: none; }
+.mission-list.preview .mission .mission-name { color: var(--ink-soft); }
+
+/* 쉬는 날 카드 */
+.rest-card {
+  padding: 26px 18px 24px;
+  border-radius: 24px;
+  background: linear-gradient(180deg, #fffdf8 0%, #f2f0ff 100%);
+  border: 3px dashed #cfc0f0;
+  box-shadow: var(--shadow-soft);
+  color: var(--ink);
+  text-align: center;
+}
+.rest-emoji { display: block; font-size: 40px; line-height: 1; }
+.rest-title {
+  margin: 10px 0 4px;
+  font-family: var(--font-title);
+  font-size: 21px;
+  color: var(--ink);
+  word-break: keep-all;
+}
+.rest-sub {
+  margin: 0;
+  font-size: 14px;
+  color: var(--ink-soft);
+  line-height: 1.45;
+  word-break: keep-all;
+}
+
+/* ===== 스티커 받기 ===== */
+.sticker-cta { margin: 6px 0 22px; text-align: center; }
+.sticker-btn {
+  width: 100%;
+  border: 0;
+  border-radius: 28px;
+  padding: 20px 16px;
+  font-family: var(--font-title);
+  font-size: 24px;
+  color: #fff;
+  background: linear-gradient(180deg, #ff5257 0%, var(--red) 100%);
+  box-shadow: 0 8px 0 var(--red-deep), 0 16px 26px rgba(230, 36, 41, 0.3);
+  cursor: pointer;
+  transition: transform 0.1s ease, box-shadow 0.1s ease;
+  letter-spacing: -0.3px;
+}
+.sticker-btn:active:not(:disabled) { transform: translateY(5px); box-shadow: 0 3px 0 var(--red-deep), 0 8px 14px rgba(230, 36, 41, 0.24); }
+.sticker-btn.ready { animation: readyGlow 1.15s ease-in-out infinite alternate; }
+.sticker-btn.filled {
+  background: linear-gradient(180deg, #ffd76a 0%, var(--gold) 100%);
+  color: #6a2a00;
+  box-shadow: 0 8px 0 var(--gold-deep), 0 16px 26px rgba(255, 201, 60, 0.4);
+  animation: readyGlowGold 1.15s ease-in-out infinite alternate;
+}
+.sticker-btn:disabled {
+  background: linear-gradient(180deg, #4c5680 0%, #39416a 100%);
+  box-shadow: 0 6px 0 #232a4d;
+  color: #b9c3e4;
+  cursor: default;
+}
+/* 오늘 도장을 이미 찍은 상태 */
+.sticker-btn.locked {
+  background: linear-gradient(180deg, #4ecf94 0%, #2fae76 100%);
+  box-shadow: 0 6px 0 #1d8256;
+  color: #06281a;
+  cursor: pointer;
+}
+.sticker-btn.locked:active { transform: translateY(3px); box-shadow: 0 3px 0 #1d8256; }
+/* 쉬는 날 */
+.sticker-btn.rest {
+  background: linear-gradient(180deg, #8f7ae0 0%, #6f57cc 100%);
+  box-shadow: 0 8px 0 #4f3ba3, 0 14px 22px rgba(111, 87, 204, 0.3);
+  color: #fff;
+  cursor: default;
+}
+.sticker-hint {
+  margin: 12px 4px 0;
+  font-size: 14px;
+  font-weight: 700;
+  color: #a9b8e6;
+  min-height: 20px;
+  line-height: 1.4;
+}
+.sticker-hint.done { color: #7ef0b2; }
+
+/* ===== 스티커판 ===== */
+.board-card { padding: 14px 14px 12px; }
+.trophy {
+  margin: -2px 0 10px;
+  font-family: var(--font-title);
+  font-size: 15px;
+  color: #8a5c00;
+  background: linear-gradient(180deg, #fff6d9, #ffeab3);
+  border: 2px dashed #f0cd6d;
+  border-radius: 14px;
+  padding: 6px 10px;
+  text-align: center;
+}
+.board {
+  list-style: none;
+  margin: 0;
+  padding: 8px;
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 7px;
+  background: #f2f1fb;
+  border-radius: 18px;
+  box-shadow: inset 0 2px 6px rgba(26, 34, 68, 0.1);
+}
+.cell {
+  position: relative;
+  aspect-ratio: 1 / 1;
+  border-radius: 15px;
+  background: #fffdf7;
+  border: 2px dashed #e2dcef;
+  display: grid;
+  place-items: center;
+  transition: transform 0.15s ease;
+  overflow: hidden;
+}
+.cell-no {
+  font-family: var(--font-title);
+  font-size: 13px;
+  color: #c3c9dd;
+  line-height: 1;
+}
+.cell.filled {
+  background: linear-gradient(180deg, #fffefa 0%, var(--tint, #fff1d6) 100%);
+  border: 2px solid #fff;
+  box-shadow: inset 0 0 0 2px rgba(26, 34, 68, 0.05), 0 2px 0 rgba(26, 34, 68, 0.06);
+}
+.cell .stamp-art {
+  position: absolute;
+  left: 3%;
+  right: 3%;
+  top: 1%;
+  bottom: 21%;
+  transform: rotate(var(--rot, 0deg));
+  filter: drop-shadow(0 1px 1px rgba(26, 34, 68, 0.22));
+}
+.cell.pop .stamp-art { animation: stampDrop 0.46s cubic-bezier(0.22, 1.5, 0.4, 1); }
+.cell.filled .cell-no { display: none; }
+.cell-date {
+  position: absolute;
+  left: 50%;
+  bottom: 3px;
+  transform: translateX(-50%);
+  padding: 1px 6px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.96);
+  border: 1.5px solid rgba(26, 34, 68, 0.16);
+  font-size: 11px;
+  font-weight: 900;
+  color: var(--ink);
+  line-height: 1.15;
+  white-space: nowrap;
+  letter-spacing: -0.2px;
+  box-shadow: 0 1px 2px rgba(26, 34, 68, 0.14);
+  pointer-events: none;
+}
+.cell-ms {
+  position: absolute;
+  left: 3px;
+  top: 0;
+  font-size: 11px;
+  line-height: 1;
+  opacity: 0.9;
+}
+.cell.milestone { border-color: #f3cf82; background: #fffaeb; }
+.cell.grand {
+  border-color: var(--gold);
+  background: linear-gradient(180deg, #fff7de, #ffe9a8);
+}
+.cell.grand .cell-ms { font-size: 16px; left: 3px; top: -1px; }
+.cell.grand .cell-no { color: #b8890a; }
+.cell.pop { animation: cellPop 0.5s ease; }
+
+.board-note {
+  margin: 10px 2px 0;
+  font-size: 13px;
+  color: var(--ink-soft);
+  text-align: center;
+  line-height: 1.45;
+  word-break: keep-all;
+}
+.board-note strong { color: var(--red); }
+.board-actions { display: flex; justify-content: center; margin-top: 10px; }
+.mom-btn {
+  font-family: var(--font-title);
+  font-size: 16px;
+  color: var(--blue-deep);
+  background: #eef4ff;
+  border: 2px solid #d3e2ff;
+  border-radius: 999px;
+  padding: 9px 18px 10px;
+  cursor: pointer;
+  box-shadow: 0 3px 0 #d3e2ff;
+}
+.mom-btn:active { transform: translateY(2px); box-shadow: 0 1px 0 #d3e2ff; }
+
+/* ===== 푸터 ===== */
+.foot { margin-top: 20px; text-align: center; color: #94a3cf; }
+.foot p { margin: 2px 0; font-size: 12px; }
+.foot .foot-small { font-size: 11px; opacity: 0.85; }
+
+/* ===== 엄마 설정 시트 ===== */
+.sheet-wrap { position: fixed; inset: 0; z-index: 40; }
+.sheet-backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(6, 10, 28, 0.62);
+  -webkit-backdrop-filter: blur(3px);
+  backdrop-filter: blur(3px);
+  animation: fadeIn 0.2s ease;
+}
+.sheet {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  max-width: 520px;
+  margin: 0 auto;
+  max-height: 92vh;
+  display: flex;
+  flex-direction: column;
+  color: var(--ink);
+  background: var(--paper);
+  border-radius: 28px 28px 0 0;
+  box-shadow: 0 -8px 30px rgba(0, 0, 0, 0.4);
+  animation: sheetUp 0.26s cubic-bezier(0.22, 1.1, 0.36, 1);
+  padding-bottom: env(safe-area-inset-bottom);
+}
+.sheet-grab {
+  width: 44px;
+  height: 5px;
+  border-radius: 999px;
+  background: #e0d8ee;
+  margin: 8px auto 0;
+}
+.sheet-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 16px;
+  border-bottom: 2px solid var(--line);
+}
+.sheet-head h2 { margin: 0; font-family: var(--font-title); font-size: 22px; }
+.x-btn {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  border: 0;
+  background: #f0ecf6;
+  color: var(--ink-soft);
+  font-size: 16px;
+  font-weight: 900;
+  cursor: pointer;
+}
+.sheet-body { overflow-y: auto; padding: 14px 16px 26px; -webkit-overflow-scrolling: touch; }
+
+.field { margin-bottom: 20px; }
+.field-label {
+  display: block;
+  font-family: var(--font-title);
+  font-size: 17px;
+  margin: 0 0 8px;
+  color: var(--ink);
+}
+.field-help { margin: 8px 0 0; font-size: 12px; color: var(--ink-soft); line-height: 1.5; }
+.text-input, .text-area {
+  width: 100%;
+  font-family: inherit;
+  font-size: 16px;
+  color: var(--ink);
+  background: #fffdf6;
+  border: 2px solid #ecdcbf;
+  border-radius: 14px;
+  padding: 11px 12px;
+  outline: none;
+}
+.text-input:focus, .text-area:focus { border-color: var(--blue); box-shadow: 0 0 0 4px rgba(47, 107, 255, 0.14); }
+.text-area { font-size: 12px; line-height: 1.45; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; resize: vertical; }
+.row { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 8px; }
+.row .text-input { flex: 1 1 150px; }
+
+.mini-btn {
+  font-family: var(--font-title);
+  font-size: 15px;
+  padding: 10px 14px 11px;
+  border-radius: 14px;
+  border: 2px solid var(--blue-deep);
+  background: var(--blue);
+  color: #fff;
+  cursor: pointer;
+  box-shadow: 0 3px 0 var(--blue-deep);
+  white-space: nowrap;
+}
+.mini-btn:active { transform: translateY(2px); box-shadow: 0 1px 0 var(--blue-deep); }
+.mini-btn.ghost { background: #fff; color: var(--blue-deep); border-color: #cee0ff; box-shadow: 0 3px 0 #cee0ff; }
+.mini-btn:disabled { opacity: 0.45; box-shadow: none; cursor: default; }
+
+.editor { display: flex; flex-direction: column; gap: 8px; }
+.edit-tabs { margin: 2px 0 8px; }
+.edit-tabs .day-tab {
+  font-size: 15px;
+  padding: 8px 0 7px;
+  background: #fffdf6;
+  border-color: #e6dcf2;
+  color: #a99bbf;
+  box-shadow: 0 3px 0 #eee6f6;
+}
+.edit-tabs .day-tab.today { border-color: #f3d08a; color: #9a6a00; background: #fffaf0; }
+.edit-tabs .day-tab.on {
+  background: linear-gradient(180deg, #4a8bf5 0%, var(--blue) 100%);
+  border-color: var(--blue-deep);
+  color: #fff;
+  box-shadow: 0 3px 0 var(--blue-deep);
+}
+.edit-tabs .day-tab.on .dt-dot { background: #fff; }
+.edit-tabs .day-tab .dt-dot { background: var(--red); }
+.edit-day-note {
+  margin: 0 0 10px;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--blue-deep);
+}
+.edit-row {
+  background: #fffaf0;
+  border: 2px solid #f0e2c9;
+  border-radius: 15px;
+  padding: 6px 8px 8px;
+}
+.edit-line { display: flex; gap: 8px; align-items: center; }
+.edit-emoji {
+  width: 44px;
+  flex: 0 0 auto;
+  text-align: center;
+  font-size: 19px;
+  padding: 6px 0;
+  border: 2px dashed #ecdab9;
+  border-radius: 10px;
+  background: #fff;
+  font-family: inherit;
+  color: var(--ink);
+  outline: none;
+}
+.edit-name {
+  flex: 1 1 auto;
+  min-width: 0;
+  font-family: inherit;
+  font-size: 16px;
+  color: var(--ink);
+  border: 2px solid transparent;
+  border-radius: 10px;
+  background: transparent;
+  padding: 7px 6px;
+  outline: none;
+}
+.edit-name:focus { border-color: #cee0ff; background: #fff; }
+.del-btn {
+  flex: 0 0 auto;
+  width: 36px;
+  height: 36px;
+  border-radius: 11px;
+  border: 0;
+  background: #ffeceb;
+  color: var(--red);
+  font-size: 16px;
+  cursor: pointer;
+}
+.edit-steps { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; margin-top: 6px; padding-left: 2px; }
+.edit-steps-label { font-size: 12px; font-weight: 700; color: var(--ink-soft); margin-right: 2px; }
+.step-pick {
+  font-family: var(--font-title);
+  font-size: 13px;
+  padding: 5px 9px 6px;
+  border-radius: 10px;
+  border: 2px solid #e6dcf2;
+  background: #fff;
+  color: #8d80a5;
+  cursor: pointer;
+  box-shadow: 0 2px 0 #eee6f6;
+}
+.step-pick.on {
+  background: var(--blue);
+  border-color: var(--blue-deep);
+  color: #fff;
+  box-shadow: 0 2px 0 var(--blue-deep);
+}
+.ghost-btn {
+  font-family: var(--font-title);
+  font-size: 15px;
+  padding: 10px 16px 11px;
+  border-radius: 14px;
+  border: 2px dashed #e2d1b4;
+  background: #fffdf6;
+  color: var(--ink-soft);
+  cursor: pointer;
+  margin-top: 10px;
+}
+.ghost-btn.wide { width: 100%; }
+.ghost-btn:active { transform: translateY(1px); }
+.ghost-btn.danger { color: var(--red); border-color: #ffcfcb; background: #fff7f6; }
+.ghost-btn.armed {
+  color: #fff;
+  background: linear-gradient(180deg, #ff6f63, var(--red));
+  border-style: solid;
+  border-color: var(--red-deep);
+  box-shadow: 0 3px 0 var(--red-deep);
+  animation: gateShake 0.32s ease;
+}
+
+/* ===== 어른 확인 ===== */
+.modal-wrap {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  display: grid;
+  place-items: center;
+  padding: 18px;
+  background: rgba(6, 10, 28, 0.66);
+  -webkit-backdrop-filter: blur(4px);
+  backdrop-filter: blur(4px);
+  animation: fadeIn 0.22s ease;
+}
+.modal {
+  width: 100%;
+  max-width: 400px;
+  text-align: center;
+  color: var(--ink);
+  background: var(--paper);
+  border: 4px solid var(--gold);
+  border-radius: 30px;
+  padding: 22px 18px 18px;
+  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.5);
+  animation: modalPop 0.42s cubic-bezier(0.22, 1.4, 0.4, 1);
+}
+.modal-emoji { font-size: 32px; margin: 0 0 4px; }
+.modal h2 {
+  margin: 0 0 10px;
+  font-family: var(--font-title);
+  font-size: 29px;
+  color: var(--red);
+  text-shadow: 2px 2px 0 #ffe9c9;
+}
+.modal-reward {
+  margin: 0 auto 10px;
+  font-family: var(--font-title);
+  font-size: 19px;
+  line-height: 1.35;
+  color: #7a4a00;
+  background: linear-gradient(180deg, #fff7dc, #ffe9a8);
+  border-radius: 16px;
+  padding: 12px 14px;
+  word-break: keep-all;
+}
+.modal-sub { margin: 0 0 16px; font-size: 14px; color: var(--ink-soft); line-height: 1.5; word-break: keep-all; }
+.claim-btn {
+  width: 100%;
+  border: 0;
+  border-radius: 22px;
+  padding: 17px 14px;
+  font-family: var(--font-title);
+  font-size: 19px;
+  color: #fff;
+  background: linear-gradient(180deg, #ff5257, var(--red));
+  box-shadow: 0 6px 0 var(--red-deep);
+  cursor: pointer;
+  line-height: 1.3;
+}
+.claim-btn:active { transform: translateY(4px); box-shadow: 0 2px 0 var(--red-deep); }
+
+.modal.gate h2 { font-size: 25px; color: var(--blue); text-shadow: 2px 2px 0 #e2edff; }
+.modal.gate .modal-emoji { font-size: 28px; }
+.modal.gate .modal-sub { margin-bottom: 12px; }
+.gate-quiz {
+  margin: 0 auto 12px;
+  font-family: var(--font-title);
+  font-size: 30px;
+  color: #7a4a00;
+  background: linear-gradient(180deg, #fff7dc, #ffe9a8);
+  border-radius: 16px;
+  padding: 10px 14px;
+  letter-spacing: 1px;
+  width: fit-content;
+}
+.gate-input {
+  width: 100%;
+  font-family: var(--font-title);
+  font-size: 28px;
+  text-align: center;
+  color: var(--ink);
+  background: #fffdf6;
+  border: 2px solid #ecdcbf;
+  border-radius: 16px;
+  padding: 10px 12px;
+  outline: none;
+  margin-bottom: 8px;
+  -moz-appearance: textfield;
+  appearance: textfield;
+}
+.gate-input::-webkit-outer-spin-button,
+.gate-input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+.gate-input:focus { border-color: var(--blue); box-shadow: 0 0 0 4px rgba(47, 107, 255, 0.14); }
+.gate-msg {
+  margin: 0 0 10px;
+  min-height: 18px;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--red);
+  line-height: 1.4;
+}
+.modal.shake { animation: gateShake 0.34s ease; }
+.ghost-btn.wide + .claim-btn, .claim-btn + .ghost-btn { margin-top: 8px; }
+
+/* ===== 컨페티 · 스탬프 · 토스트 ===== */
+.confetti { position: fixed; inset: 0; pointer-events: none; z-index: 60; overflow: hidden; }
+.confetti-piece {
+  position: absolute;
+  top: -24px;
+  width: 10px;
+  height: 15px;
+  border-radius: 3px;
+  animation: confettiFall linear forwards;
+}
+.stamp-layer { position: fixed; inset: 0; pointer-events: none; z-index: 55; display: grid; place-items: center; }
+.stamp-art-big {
+  width: 190px;
+  height: 190px;
+  animation: stampHit 0.8s cubic-bezier(0.2, 1.3, 0.3, 1) forwards;
+  filter: drop-shadow(0 10px 16px rgba(0, 0, 0, 0.5));
+}
+.stamp-word {
+  position: absolute;
+  font-family: var(--font-title);
+  font-size: 38px;
+  color: #fff;
+  text-shadow: 3px 3px 0 var(--red), -3px -3px 0 var(--red), 3px -3px 0 var(--red), -3px 3px 0 var(--red);
+  animation: wordPop 0.8s ease forwards;
+}
+.toast {
+  position: fixed;
+  left: 50%;
+  bottom: 26px;
+  transform: translateX(-50%);
+  z-index: 70;
+  max-width: 88vw;
+  background: rgba(10, 16, 44, 0.96);
+  border: 2px solid rgba(79, 209, 255, 0.4);
+  color: #fff;
+  font-size: 14px;
+  font-weight: 700;
+  padding: 12px 18px;
+  border-radius: 999px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.35);
+  animation: toastIn 0.24s ease;
+  text-align: center;
+}
+
+/* ===== 애니메이션 ===== */
+@keyframes badgeBob { 0%, 100% { transform: translateY(0) rotate(-2deg); } 50% { transform: translateY(-5px) rotate(2deg); } }
+@keyframes boltBlink { 0%, 49% { opacity: 1; } 50%, 100% { opacity: 0.4; } }
+@keyframes tickPop { 0% { transform: scale(0.5) rotate(-20deg); } 70% { transform: scale(1.12) rotate(2deg); } 100% { transform: scale(1.02) rotate(-6deg); } }
+@keyframes readyGlow {
+  0% { box-shadow: 0 8px 0 var(--red-deep), 0 12px 20px rgba(230, 36, 41, 0.26); filter: brightness(1); }
+  100% { box-shadow: 0 8px 0 var(--red-deep), 0 18px 32px rgba(255, 201, 60, 0.6); filter: brightness(1.08); }
+}
+@keyframes readyGlowGold {
+  0% { box-shadow: 0 8px 0 var(--gold-deep), 0 12px 20px rgba(255, 201, 60, 0.3); filter: brightness(1); }
+  100% { box-shadow: 0 8px 0 var(--gold-deep), 0 18px 34px rgba(255, 201, 60, 0.75); filter: brightness(1.06); }
+}
+@keyframes stampDrop {
+  0% { transform: rotate(var(--rot, 0deg)) scale(2.4); opacity: 0; }
+  60% { transform: rotate(var(--rot, 0deg)) scale(0.92); opacity: 1; }
+  100% { transform: rotate(var(--rot, 0deg)) scale(1); opacity: 1; }
+}
+@keyframes cellPop { 0% { transform: scale(1); } 40% { transform: scale(1.18) rotate(2deg); } 100% { transform: scale(1); } }
+@keyframes stampHit {
+  0% { transform: scale(2.8) rotate(-24deg); opacity: 0; }
+  45% { transform: scale(0.94) rotate(6deg); opacity: 1; }
+  60% { transform: scale(1.04) rotate(-3deg); }
+  100% { transform: scale(1) rotate(0deg); opacity: 0; }
+}
+@keyframes wordPop {
+  0% { transform: translateY(30px) scale(0.4); opacity: 0; }
+  40% { transform: translateY(0) scale(1.15); opacity: 1; }
+  70% { opacity: 1; }
+  100% { transform: translateY(-14px) scale(1); opacity: 0; }
+}
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+@keyframes sheetUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
+@keyframes modalPop { from { transform: scale(0.82) translateY(10px); opacity: 0; } to { transform: scale(1) translateY(0); opacity: 1; } }
+@keyframes gateShake {
+  0%, 100% { transform: translateX(0); }
+  20% { transform: translateX(-7px); }
+  40% { transform: translateX(6px); }
+  60% { transform: translateX(-4px); }
+  80% { transform: translateX(3px); }
+}
+@keyframes confettiFall {
+  0% { transform: translate3d(0, 0, 0) rotate(0deg); opacity: 1; }
+  100% { transform: translate3d(var(--dx, 0px), 108vh, 0) rotate(var(--spin, 540deg)); opacity: 0.9; }
+}
+@keyframes toastIn { from { transform: translate(-50%, 14px); opacity: 0; } to { transform: translate(-50%, 0); opacity: 1; } }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; }
+}
+
+/* 좁은 화면(360px 이하) 보정 */
+@media (max-width: 360px) {
+  .app { padding: 12px 10px 28px; }
+  .mission-name { font-size: 19px; }
+  .mission { gap: 9px; padding: 11px 11px; }
+  .mission-emoji { width: 40px; height: 40px; font-size: 24px; }
+  .tick { width: 40px; height: 40px; font-size: 20px; }
+  .sticker-btn { font-size: 21px; padding: 18px 12px; }
+  .hero-title-label { font-size: 11px; letter-spacing: 1.8px; }
+  .hero-title-main { font-size: 21px; letter-spacing: -0.6px; }
+  .board { gap: 5px; padding: 6px; }
+  .cell-date { font-size: 10px; bottom: 2px; padding: 1px 4px; border-width: 1px; }
+  .cell-ms { font-size: 10px; }
+  .day-tabs { gap: 4px; }
+  .day-tab { font-size: 15px; padding: 9px 0 8px; border-radius: 13px; }
+  .day-tab .dt-dot { width: 4px; height: 4px; margin-top: 3px; }
+  .section-head h2 { font-size: 19px; }
+  .section-head h2 .day-tag { font-size: 16px; }
+  .preview-note { font-size: 12px; padding: 8px 10px; }
+  .rest-title { font-size: 19px; }
+  .rest-sub { font-size: 13px; }
+  .edit-tabs .day-tab { font-size: 14px; padding: 7px 0 6px; }
+  .step { min-width: 34px; height: 34px; font-size: 15px; padding: 0 7px; }
+}
+</style>
+</head>
+<body>
+
+<!-- ===== 공용 SVG 심볼: 어벤져스 캐릭터 얼굴 스티커 8종 ===== -->
+<svg class="sprite" aria-hidden="true" focusable="false" width="0" height="0">
+  <defs>
+    <clipPath id="clipSpidey"><circle cx="50" cy="46" r="38.5" /></clipPath>
+    <linearGradient id="gradGold" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#ffe08a" />
+      <stop offset="1" stop-color="#e8a91c" />
+    </linearGradient>
+    <linearGradient id="gradSilver" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#f4f7fc" />
+      <stop offset="1" stop-color="#c3cbdb" />
+    </linearGradient>
+  </defs>
+
+  <!-- 1. 아이언맨 -->
+  <symbol id="face-ironman" viewBox="0 0 100 100">
+    <circle cx="50" cy="46" r="42" fill="#fff" />
+    <circle cx="50" cy="46" r="38.5" fill="#c8102e" />
+    <path d="M50 15c-13 0-20 11-20 26 0 18 9 31 20 31s20-13 20-31c0-15-7-26-20-26z" fill="url(#gradGold)" />
+    <path d="M50 15v57" stroke="#c98d0a" stroke-width="1.2" opacity=".5" />
+    <rect x="34" y="38.5" width="12.5" height="7" rx="3.5" fill="#e8faff" transform="rotate(-6 40.2 42)" />
+    <rect x="53.5" y="38.5" width="12.5" height="7" rx="3.5" fill="#e8faff" transform="rotate(6 59.8 42)" />
+    <rect x="41.5" y="58" width="17" height="4" rx="2" fill="#8c1013" />
+    <path d="M45 58v4M50 58v4M55 58v4" stroke="#f7d98a" stroke-width="1.4" opacity=".85" />
+    <circle cx="50" cy="30" r="2.6" fill="#fff6d8" opacity=".9" />
+  </symbol>
+
+  <!-- 2. 캡틴 아메리카 -->
+  <symbol id="face-cap" viewBox="0 0 100 100">
+    <circle cx="50" cy="46" r="42" fill="#fff" />
+    <circle cx="50" cy="46" r="38.5" fill="#1d4ea8" />
+    <ellipse cx="50" cy="57" rx="17" ry="19.5" fill="#f7cfa9" />
+    <path d="M50 30c-12 0-18 8-18 18 3-7 9-10 18-10s15 3 18 10c0-10-6-18-18-18z" fill="#e9bd63" />
+    <path d="M50 24.5 44 38.5M50 24.5 56 38.5M46.2 34.5h7.6" stroke="#fff" stroke-width="3" stroke-linecap="round" fill="none" />
+    <circle cx="43.8" cy="53" r="2.6" fill="#22304f" />
+    <circle cx="56.2" cy="53" r="2.6" fill="#22304f" />
+    <path d="M45.4 63.5q4.6 4.4 9.2 0" stroke="#b0653c" stroke-width="2" stroke-linecap="round" fill="none" />
+  </symbol>
+
+  <!-- 3. 토르 -->
+  <symbol id="face-thor" viewBox="0 0 100 100">
+    <circle cx="50" cy="46" r="42" fill="#fff" />
+    <circle cx="50" cy="46" r="38.5" fill="#2a3f6e" />
+    <path d="M50 18c-18 0-27 14-27 35 0 11 3 20 8 27h8c-5-12-6-25-2-35h26c4 10 3 23-2 35h8c5-7 8-16 8-27 0-21-9-35-27-35z" fill="#edc25f" />
+    <ellipse cx="50" cy="55" rx="16.5" ry="19" fill="#f8d4b0" />
+    <path d="M33.5 45c3-13 30-13 33 0-9-5-24-5-33 0z" fill="#edc25f" />
+    <circle cx="44" cy="53" r="2.4" fill="#2b3a5c" />
+    <circle cx="56" cy="53" r="2.4" fill="#2b3a5c" />
+    <path d="M42.5 66q7.5 7 15 0-7.5 3.5-15 0z" fill="#e3b352" />
+    <path d="M46.5 65.5q3.5 3 7 0" stroke="#a8623a" stroke-width="1.8" stroke-linecap="round" fill="none" />
+  </symbol>
+
+  <!-- 4. 헐크 -->
+  <symbol id="face-hulk" viewBox="0 0 100 100">
+    <circle cx="50" cy="46" r="42" fill="#fff" />
+    <circle cx="50" cy="46" r="38.5" fill="#4a2a6b" />
+    <ellipse cx="50" cy="55" rx="23" ry="24.5" fill="#57bd45" />
+    <path d="M27 45c0-21 11-29 23-29s23 8 23 29c-5-14-12-19-23-19s-18 5-23 19z" fill="#171b26" />
+    <path d="M33 45.5 45.5 49.5M67 45.5 54.5 49.5" stroke="#171b26" stroke-width="4.2" stroke-linecap="round" />
+    <ellipse cx="40.5" cy="52.5" rx="4.2" ry="3.3" fill="#fff" />
+    <ellipse cx="59.5" cy="52.5" rx="4.2" ry="3.3" fill="#fff" />
+    <circle cx="40.9" cy="53.1" r="1.8" fill="#16202e" />
+    <circle cx="59.1" cy="53.1" r="1.8" fill="#16202e" />
+    <path d="M39.5 62.5h21" stroke="#171b26" stroke-width="8" stroke-linecap="round" />
+    <rect x="40.5" y="60.5" width="19" height="2.6" rx="1.3" fill="#fff" />
+  </symbol>
+
+  <!-- 5. 스파이더맨 -->
+  <symbol id="face-spidey" viewBox="0 0 100 100">
+    <circle cx="50" cy="46" r="42" fill="#fff" />
+    <circle cx="50" cy="46" r="38.5" fill="#d61f26" />
+    <g clip-path="url(#clipSpidey)" stroke="#14161f" stroke-width="1.5" opacity=".62" fill="none">
+      <path d="M50 4v84M12 46h76M23 19 77 73M77 19 23 73M18 32 82 60M82 32 18 60" />
+      <circle cx="50" cy="46" r="17" />
+      <circle cx="50" cy="46" r="30" />
+    </g>
+    <path d="M49 47c-4-11-16-14-21-6-3 6 3 15 11 16 6 .5 10-4 10-10z" fill="#fff" stroke="#14161f" stroke-width="2.4" stroke-linejoin="round" />
+    <path d="M51 47c4-11 16-14 21-6 3 6-3 15-11 16-6 .5-10-4-10-10z" fill="#fff" stroke="#14161f" stroke-width="2.4" stroke-linejoin="round" />
+  </symbol>
+
+  <!-- 6. 블랙 팬서 -->
+  <symbol id="face-panther" viewBox="0 0 100 100">
+    <circle cx="50" cy="46" r="42" fill="#fff" />
+    <circle cx="50" cy="46" r="38.5" fill="#6d4bd8" />
+    <path d="M31 27 24 12l17 9zM69 27 76 12l-17 9z" fill="#14161f" />
+    <path d="M50 19c-19 0-25 15-25 31 0 15 10 28 25 28s25-13 25-28c0-16-6-31-25-31z" fill="#14161f" />
+    <path d="M33.5 47q6.5-4.5 13 0-6.5 4-13 0zM66.5 47q-6.5-4.5-13 0 6.5 4 13 0z" fill="#c9d2e6" />
+    <path d="M42 61.5h16M46.5 57q3.5 3 7 0" stroke="#4a4f60" stroke-width="2" stroke-linecap="round" fill="none" />
+  </symbol>
+
+  <!-- 7. 캡틴 마블 -->
+  <symbol id="face-marvel" viewBox="0 0 100 100">
+    <circle cx="50" cy="46" r="42" fill="#fff" />
+    <circle cx="50" cy="46" r="38.5" fill="#1b4a9c" />
+    <path d="M50 12c-5 9-7 20-7 31h14c0-11-2-22-7-31z" fill="#f2c95c" />
+    <ellipse cx="50" cy="56" rx="17" ry="19" fill="#f8d4b0" />
+    <path d="M50 24c-13 0-20 10-20 22 4-8 12-12 20-12s16 4 20 12c0-12-7-22-20-22z" fill="#c8102e" />
+    <circle cx="43.5" cy="55" r="2.5" fill="#2b3a5c" />
+    <circle cx="56.5" cy="55" r="2.5" fill="#2b3a5c" />
+    <path d="M45.5 64q4.5 4 9 0" stroke="#b0653c" stroke-width="2" stroke-linecap="round" fill="none" />
+    <path d="M50 34.5 52.2 39h4.7l-3.8 2.8 1.5 4.6L50 43.6l-4.6 2.8 1.5-4.6-3.8-2.8h4.7z" fill="#ffd76a" />
+  </symbol>
+
+  <!-- 8. 앤트맨 -->
+  <symbol id="face-antman" viewBox="0 0 100 100">
+    <circle cx="50" cy="46" r="42" fill="#fff" />
+    <circle cx="50" cy="46" r="38.5" fill="#b8121c" />
+    <path d="M45 22c-4-8-7-12-11-15M55 22c4-8 7-12 11-15" stroke="#dbe2ee" stroke-width="3.4" stroke-linecap="round" fill="none" />
+    <path d="M50 23c-12 0-18 10-18 24 0 15 8 26 18 26s18-11 18-26c0-14-6-24-18-24z" fill="url(#gradSilver)" stroke="#9aa6bb" stroke-width="1.4" />
+    <rect x="35.5" y="41" width="12" height="6.5" rx="3.2" fill="#22304f" transform="rotate(-6 41.5 44.2)" />
+    <rect x="52.5" y="41" width="12" height="6.5" rx="3.2" fill="#22304f" transform="rotate(6 58.5 44.2)" />
+    <rect x="43" y="61" width="14" height="3" rx="1.5" fill="#8c96a8" />
+    <circle cx="50" cy="30" r="2" fill="#fff" opacity=".8" />
+  </symbol>
+</svg>
+
+<div class="bg" aria-hidden="true"></div>
+
+<div class="app">
+  <header class="hero">
+    <svg class="hero-badge" viewBox="0 0 100 100" role="img" aria-label="어벤져스 배지">
+      <circle cx="50" cy="50" r="46" fill="#e62429" />
+      <circle cx="50" cy="50" r="40" fill="none" stroke="rgba(255,255,255,.55)" stroke-width="3" />
+      <path d="M33 73 50 27 67 73M40 59h20" stroke="#fff" stroke-width="8" stroke-linecap="round" fill="none" />
+    </svg>
+    <h1 class="hero-title">
+      <span class="hero-title-label">AVENGERS</span>
+      <span class="hero-title-main" id="heroTitle">출동! 재윤 대원의 미션 대작전</span>
+    </h1>
+    <p class="hero-sub"><span class="bolt" aria-hidden="true">⚡</span> 오늘도 힘차게 출동!</p>
+  </header>
+
+  <main>
+    <!-- ===== 목표 ===== -->
+    <section class="goal card" aria-labelledby="goalKicker">
+      <svg class="goal-reactor" viewBox="0 0 100 100" role="img" aria-label="아크 리액터">
+        <circle cx="50" cy="50" r="46" fill="#123049" />
+        <circle cx="50" cy="50" r="40" fill="none" stroke="#2b6a8c" stroke-width="2.5" />
+        <circle cx="50" cy="50" r="27" fill="#0b1e2e" stroke="#3f8fb5" stroke-width="2.5" />
+        <path d="M50 26v12M70 37 62 45M74 50H62M70 63 62 55M50 74V62M30 63l8-8M26 50h12M30 37l8 8" stroke="#9fe8ff" stroke-width="3.4" stroke-linecap="round" />
+        <circle cx="50" cy="50" r="11" fill="#e8fbff" />
+        <circle cx="50" cy="50" r="16" fill="none" stroke="#4fd1ff" stroke-width="2" opacity=".7" />
+      </svg>
+      <div class="goal-body">
+        <p class="goal-kicker" id="goalKicker">우리의 목표 🎁</p>
+        <p class="goal-reward"><span class="gift" aria-hidden="true">🎁</span><span id="rewardText">5,000원 받기</span></p>
+        <div class="meter">
+          <div class="meter-fill" id="goalFill"></div>
+          <span class="meter-label" id="goalCount">0 / 30</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== 오늘의 미션 ===== -->
+    <section class="missions" aria-labelledby="missionTitle">
+      <div class="section-head">
+        <h2 id="missionTitle"><span id="missionTitleMain">오늘의 미션</span><span class="day-tag" id="missionDayTag"> · 월요일</span></h2>
+        <span class="pill" id="missionProgress">0 / 7</span>
+      </div>
+      <div class="day-tabs" id="dayTabs" role="tablist" aria-label="요일별 미션 보기"></div>
+      <p class="preview-note" id="previewNote" hidden></p>
+      <div id="missionList" class="mission-list"></div>
+      <p class="mission-tip" id="missionTip">미션을 다 하면 <strong>어벤져스 스티커</strong>를 받을 수 있어요!</p>
+    </section>
+
+    <!-- ===== 스티커 받기 ===== -->
+    <section class="sticker-cta">
+      <button type="button" id="stickerBtn" class="sticker-btn" disabled>어벤져스 스티커 받기!</button>
+      <p class="sticker-hint" id="stickerHint">미션을 모두 완료하면 버튼이 켜져요!</p>
+    </section>
+
+    <!-- ===== 스티커판 ===== -->
+    <section class="board-card card" aria-labelledby="boardTitle">
+      <div class="section-head">
+        <h2 id="boardTitle">어벤져스 스티커판</h2>
+        <span class="pill blue" id="boardProgress">0 / 30</span>
+      </div>
+      <p class="trophy" id="trophyBadge">🏆 달성한 판 0개</p>
+      <ol class="board" id="board" aria-label="어벤져스 스티커 30칸"></ol>
+      <p class="board-note">30개를 다 모으면 <strong id="boardRewardNote">5,000원 받기</strong> 🎁</p>
+      <div class="board-actions">
+        <button type="button" id="momBtn" class="mom-btn">⚙️ 엄마 설정</button>
+      </div>
+    </section>
+  </main>
+
+  <footer class="foot">
+    <p>이 브라우저에만 저장돼요 · 무료 GitHub Pages</p>
+    <p class="foot-small">출동! 재윤 대원, 오늘도 화이팅 💛</p>
+  </footer>
+</div>
+
+<!-- ===== 엄마 설정 (바텀시트) ===== -->
+<div class="sheet-wrap" id="settingsWrap" hidden>
+  <div class="sheet-backdrop" data-close="1"></div>
+  <section class="sheet" role="dialog" aria-modal="true" aria-labelledby="settingsTitle">
+    <div class="sheet-grab" aria-hidden="true"></div>
+    <div class="sheet-head">
+      <h2 id="settingsTitle">⚙️ 엄마 설정</h2>
+      <button type="button" class="x-btn" data-close="1" aria-label="닫기">✕</button>
+    </div>
+    <div class="sheet-body">
+      <div class="field">
+        <label class="field-label" for="titleInput">🏷️ 제목</label>
+        <input id="titleInput" class="text-input" type="text" maxlength="40" placeholder="출동! 재윤 대원의 미션 대작전" />
+      </div>
+
+      <div class="field">
+        <label class="field-label" for="rewardInput">🎁 상품 (30개를 모으면 받는 것)</label>
+        <input id="rewardInput" class="text-input" type="text" maxlength="40" placeholder="5,000원 받기" />
+      </div>
+
+      <div class="field">
+        <p class="field-label">📋 요일별 미션</p>
+        <div class="day-tabs edit-tabs" id="editDayTabs" role="tablist" aria-label="고칠 요일 선택"></div>
+        <p class="edit-day-note" id="editDayNote">월요일 미션을 고치고 있어요</p>
+        <div id="missionEditor" class="editor"></div>
+        <div class="row">
+          <input id="newMissionName" class="text-input" type="text" maxlength="20" placeholder="새 미션 이름 (예: 받아쓰기)" />
+          <button type="button" id="addMissionBtn" class="mini-btn">추가</button>
+        </div>
+        <button type="button" id="resetMissionsBtn" class="ghost-btn">기본 요일표로 복원</button>
+        <p class="field-help">요일을 골라 그 날의 미션만 고칠 수 있어요. <strong>한 번</strong>은 카드를 눌러 한 번에 체크, <strong>1·2</strong>처럼 고르면 단계 버튼으로 나누어 체크해요. 미션을 다 지우면 그 요일은 쉬는 날이 돼요.</p>
+      </div>
+
+      <div class="field">
+        <p class="field-label">🛡️ 스티커 직접 조정</p>
+        <div class="row">
+          <button type="button" id="minusStickerBtn" class="mini-btn ghost">−1 취소</button>
+          <button type="button" id="plusStickerBtn" class="mini-btn">+1 보충</button>
+          <button type="button" id="resetTodayBtn" class="mini-btn ghost">오늘 미션 초기화</button>
+        </div>
+        <p class="field-help">빠진 날은 +1로 보충하고, 잘못 찍었으면 −1로 지워요.</p>
+      </div>
+
+      <div class="field">
+        <p class="field-label">🔄 처음부터 다시</p>
+        <button type="button" id="fullResetBtn" class="ghost-btn wide danger">🔄 전체 초기화 (0부터 다시)</button>
+        <p class="field-help">스티커판·오늘 미션 체크·달성한 판 기록을 모두 지우고 0/30부터 다시 시작해요. 제목·상품·요일별 미션표는 그대로 남아요. (두 번 눌러야 지워져요)</p>
+      </div>
+
+      <div class="field">
+        <label class="field-label" for="backupBox">💾 기기 백업 · 이동 (JSON)</label>
+        <textarea id="backupBox" class="text-area" rows="5" spellcheck="false" placeholder="내보내기를 누르면 여기에 저장 내용이 나와요. 다른 기기에서는 이 내용을 붙여넣고 가져오기를 누르세요."></textarea>
+        <div class="row">
+          <button type="button" id="exportBtn" class="mini-btn">내보내기</button>
+          <button type="button" id="copyBtn" class="mini-btn ghost">복사</button>
+          <button type="button" id="importBtn" class="mini-btn ghost">가져오기</button>
+        </div>
+        <div class="row">
+          <button type="button" id="saveFileBtn" class="mini-btn ghost">📥 파일로 저장</button>
+          <button type="button" id="loadFileBtn" class="mini-btn ghost">📂 파일에서 불러오기</button>
+        </div>
+        <input id="fileInput" type="file" accept=".json,application/json" hidden />
+        <p class="field-help">이 브라우저에만 저장돼요. 브라우저 기록을 지우면 스티커도 사라지니 가끔 파일로 저장해 두세요.</p>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- ===== 어른 확인 (아이 방지) ===== -->
+<div class="modal-wrap" id="gateWrap" hidden>
+  <div class="modal gate" id="gateModal" role="dialog" aria-modal="true" aria-labelledby="gateTitle">
+    <p class="modal-emoji" aria-hidden="true">🔒</p>
+    <h2 id="gateTitle">어른 확인</h2>
+    <p class="modal-sub">엄마·아빠만 열 수 있어요.<br />아래 계산의 답을 적어 주세요.</p>
+    <p class="gate-quiz" id="gateQuestion">7 + 8 =</p>
+    <input id="gateAnswer" class="gate-input" type="text" inputmode="numeric" maxlength="3" autocomplete="off" enterkeyhint="done" aria-label="계산의 답" />
+    <p class="gate-msg" id="gateMsg" role="status" aria-live="polite"></p>
+    <button type="button" id="gateOkBtn" class="claim-btn">확인</button>
+    <button type="button" id="gateCancelBtn" class="ghost-btn wide">취소</button>
+  </div>
+</div>
+
+<!-- ===== 30개 축하 ===== -->
+<div class="modal-wrap" id="celebrateWrap" hidden>
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="celebrateTitle">
+    <p class="modal-emoji" aria-hidden="true">🎉🛡️🎉</p>
+    <h2 id="celebrateTitle">30개 대성공!</h2>
+    <p class="modal-reward">🎁 <span id="modalReward">5,000원 받기</span></p>
+    <p class="modal-sub">재윤 대원이 어벤져스 스티커 30개를 다 모았어요!<br />미션 대작전 완료!</p>
+    <button type="button" id="claimBtn" class="claim-btn">🎁 상품 받았어요! 새 스티커판 시작하기</button>
+    <button type="button" class="ghost-btn wide" data-close="1">조금 있다가 할래요</button>
+  </div>
+</div>
+
+<div id="confetti" class="confetti" aria-hidden="true"></div>
+<div class="stamp-layer" id="stampLayer" aria-hidden="true"></div>
+<div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
+
+<script>
+/* =====================================================================
+   출동! 재윤 대원의 미션 대작전
+   - 서버 없이 localStorage 에만 저장합니다 (개인정보 외부 전송 없음).
+   ===================================================================== */
+(function () {
+  "use strict";
+
+  var KEY = "jaeyun.missionboard.v1";
+  var BOARD_SIZE = 30;
+  var SVGNS = "http://www.w3.org/2000/svg";
+  var XLINKNS = "http://www.w3.org/1999/xlink";
+  var MAX_MISSIONS = 12;
+  var MAX_STEPS = 4;
+
+  var DEFAULT_TITLE = "출동! 재윤 대원의 미션 대작전";
+  var DEFAULT_REWARD = "5,000원 받기";
+
+  var DAY_NAMES = ["일", "월", "화", "수", "목", "금", "토"];
+  var DAY_ORDER = [1, 2, 3, 4, 5, 6, 0]; /* 월 → 일 */
+
+  /* 스티커 얼굴(스프라이트 심볼 id) — 칸마다 순서대로 돌아가며 나옵니다 */
+  var FACES = ["ironman", "cap", "thor", "hulk", "spidey", "panther", "marvel", "antman"];
+  var TINTS = {
+    ironman: "#ffe9e9",
+    cap: "#e8efff",
+    thor: "#e9eeff",
+    hulk: "#e7f9ec",
+    spidey: "#ffe9ea",
+    panther: "#efeaff",
+    marvel: "#e8efff",
+    antman: "#ffe9ea"
+  };
+  var MILESTONES = { 5: "⭐", 10: "🎁", 15: "⭐", 20: "🎁", 25: "⭐", 30: "🎁" };
+  var CONFETTI_COLORS = ["#e62429", "#ffc93c", "#4fd1ff", "#2fbf71", "#8b5cf6", "#ffffff"];
+
+  /* 일곱 요일 모두 같은 기본 미션 (엄마 설정에서 요일별로 고칠 수 있어요) */
+  var DEFAULT_MISSIONS = [
+    { id: "m_soma", emoji: "🔢", name: "소마셈 2장", steps: ["1", "2"] },
+    { id: "m_1031", emoji: "➕", name: "1031 2장", steps: ["1", "2"] },
+    { id: "m_book", emoji: "📚", name: "책 3권 독서", steps: ["1", "2", "3"] },
+    { id: "m_poke", emoji: "✏️", name: "포켓몬 한글쓰기" },
+    { id: "m_phonics", emoji: "🔤", name: "슈퍼매직파닉스" },
+    { id: "m_sight", emoji: "👀", name: "사이트워드" },
+    { id: "m_engread", emoji: "📖", name: "영어독서 2권", steps: ["1", "2"] }
+  ];
+
+  var state = null;
+  var viewDay = null;   /* 화면에서 보고 있는 요일 (처음엔 오늘) */
+  var editDay = null;   /* 엄마 설정에서 고치는 요일 */
+  var animateIndex = -1;
+  var saveTimer = null;
+  var toastTimer = null;
+
+  /* ---------- 작은 도구 ---------- */
+  function pad2(n) { return (n < 10 ? "0" : "") + n; }
+  function byId(id) { return document.getElementById(id); }
+
+  function todayKey() {
+    var d = new Date();
+    return d.getFullYear() + "-" + pad2(d.getMonth() + 1) + "-" + pad2(d.getDate());
+  }
+  function todayLabel() {
+    var d = new Date();
+    return (d.getMonth() + 1) + "/" + d.getDate();
+  }
+  function todayDay() { return new Date().getDay(); }
+  function dayName(day) { return DAY_NAMES[day] + "요일"; }
+
+  function cloneMission(m) {
+    var copy = { id: m.id, emoji: m.emoji, name: m.name };
+    if (m.steps && m.steps.length) copy.steps = m.steps.slice();
+    return copy;
+  }
+
+  function defaultSchedule() {
+    var out = {};
+    for (var i = 0; i < DAY_ORDER.length; i++) {
+      var k = String(DAY_ORDER[i]);
+      out[k] = DEFAULT_MISSIONS.map(cloneMission);
+    }
+    return out;
+  }
+
+  function freshState() {
+    return {
+      version: 1,
+      title: DEFAULT_TITLE,
+      reward: DEFAULT_REWARD,
+      schedule: defaultSchedule(),
+      checks: {},
+      board: [],
+      boardsDone: 0,
+      history: [],
+      lastVisit: null
+    };
+  }
+
+  /* ---------- 저장 / 불러오기 ---------- */
+  function normalizeMissions(list) {
+    if (!Array.isArray(list)) return [];
+    var out = [];
+    for (var i = 0; i < list.length && out.length < MAX_MISSIONS; i++) {
+      var m = list[i];
+      if (!m || typeof m.name !== "string" || !m.name.trim()) continue;
+      var item = {
+        id: String(m.id || ("m_" + i)),
+        emoji: (typeof m.emoji === "string" && m.emoji.trim()) ? m.emoji.trim().slice(0, 4) : "⭐",
+        name: m.name.trim().slice(0, 20)
+      };
+      if (Array.isArray(m.steps) && m.steps.length > 1) {
+        item.steps = m.steps.slice(0, MAX_STEPS).map(String);
+        if (item.steps.length < 2) delete item.steps;
+      }
+      out.push(item);
+    }
+    return out;
+  }
+
+  function normalizeState(raw) {
+    var s = freshState();
+    if (!raw || typeof raw !== "object") return s;
+
+    if (typeof raw.title === "string" && raw.title.trim()) s.title = raw.title.trim().slice(0, 40);
+    if (typeof raw.reward === "string" && raw.reward.trim()) s.reward = raw.reward.trim().slice(0, 40);
+
+    if (raw.schedule && typeof raw.schedule === "object" && !Array.isArray(raw.schedule)) {
+      for (var i = 0; i < DAY_ORDER.length; i++) {
+        var k = String(DAY_ORDER[i]);
+        if (Object.prototype.hasOwnProperty.call(raw.schedule, k)) {
+          s.schedule[k] = normalizeMissions(raw.schedule[k]);
+        }
+      }
+    }
+
+    if (raw.checks && typeof raw.checks === "object" && !Array.isArray(raw.checks)) {
+      var checks = {};
+      var days = Object.keys(raw.checks);
+      for (var d = 0; d < days.length; d++) {
+        var dayChecks = raw.checks[days[d]];
+        if (!dayChecks || typeof dayChecks !== "object") continue;
+        var clean = {};
+        var ks = Object.keys(dayChecks);
+        for (var c = 0; c < ks.length; c++) {
+          if (dayChecks[ks[c]]) clean[String(ks[c])] = true;
+        }
+        if (Object.keys(clean).length) checks[String(days[d])] = clean;
+      }
+      s.checks = checks;
+    }
+
+    if (Array.isArray(raw.board)) {
+      var board = [];
+      for (var b = 0; b < raw.board.length && board.length < BOARD_SIZE; b++) {
+        var e = raw.board[b];
+        if (!e || typeof e !== "object") continue;
+        var face = (FACES.indexOf(e.face) !== -1) ? e.face : FACES[board.length % FACES.length];
+        var item = {
+          key: String(e.key || ""),
+          label: String(e.label || ""),
+          face: face,
+          rot: Number(e.rot) || 0
+        };
+        if (e.manual) item.manual = true;
+        board.push(item);
+      }
+      s.board = board;
+    }
+
+    s.boardsDone = isFinite(Number(raw.boardsDone)) ? Math.max(0, Math.floor(Number(raw.boardsDone))) : 0;
+    s.history = Array.isArray(raw.history) ? raw.history.slice(-60) : [];
+    if (typeof raw.lastVisit === "string") s.lastVisit = raw.lastVisit;
+    return s;
+  }
+
+  function load() {
+    var raw = null;
+    try { raw = window.localStorage.getItem(KEY); } catch (err) { raw = null; }
+    if (raw) {
+      try { state = normalizeState(JSON.parse(raw)); }
+      catch (err) { state = freshState(); }
+    } else {
+      state = freshState();
+    }
+  }
+
+  function save() {
+    try { window.localStorage.setItem(KEY, JSON.stringify(state)); } catch (err) { /* 저장 불가 환경 무시 */ }
+  }
+
+  function saveSoon() {
+    window.clearTimeout(saveTimer);
+    saveTimer = window.setTimeout(save, 220);
+  }
+
+  function toast(message) {
+    var el = byId("toast");
+    if (!el) return;
+    el.textContent = message;
+    el.hidden = false;
+    window.clearTimeout(toastTimer);
+    toastTimer = window.setTimeout(function () { el.hidden = true; }, 2400);
+  }
+
+  /* ---------- 요일별 미션 ---------- */
+  function missionsOf(day) {
+    var k = String(day);
+    if (!Array.isArray(state.schedule[k])) state.schedule[k] = [];
+    return state.schedule[k];
+  }
+  function viewMissions() { return missionsOf(viewDay); }
+  function todayMissions() { return missionsOf(todayDay()); }
+  function isPreview() { return viewDay !== todayDay(); }
+
+  function findMission(list, id) {
+    for (var i = 0; i < list.length; i++) { if (list[i].id === id) return list[i]; }
+    return null;
+  }
+
+  function stepsCount(mission) {
+    return (mission.steps && mission.steps.length) ? mission.steps.length : 1;
+  }
+
+  function setStepsCount(mission, n) {
+    if (n <= 1) { delete mission.steps; return; }
+    var arr = [];
+    for (var i = 1; i <= n; i++) arr.push(String(i));
+    mission.steps = arr;
+  }
+
+  /* ---------- 오늘 체크 상태 ---------- */
+  function dayChecks() {
+    var key = todayKey();
+    if (!state.checks[key]) state.checks[key] = {};
+    return state.checks[key];
+  }
+  function isStepDone(mission, step) {
+    var c = state.checks[todayKey()] || {};
+    return !!c[mission.id + "#" + step];
+  }
+  function isMissionDone(mission) {
+    var c = state.checks[todayKey()] || {};
+    if (mission.steps && mission.steps.length) {
+      for (var i = 0; i < mission.steps.length; i++) {
+        if (!c[mission.id + "#" + mission.steps[i]]) return false;
+      }
+      return true;
+    }
+    return !!c[mission.id];
+  }
+  function countDone(list) {
+    var n = 0;
+    for (var i = 0; i < list.length; i++) { if (isMissionDone(list[i])) n += 1; }
+    return n;
+  }
+  function toggleMission(mission) {
+    if (isPreview()) return;
+    var c = dayChecks();
+    var i;
+    if (mission.steps && mission.steps.length) {
+      var all = isMissionDone(mission);
+      for (i = 0; i < mission.steps.length; i++) {
+        var k = mission.id + "#" + mission.steps[i];
+        if (all) delete c[k]; else c[k] = true;
+      }
+    } else {
+      if (c[mission.id]) delete c[mission.id]; else c[mission.id] = true;
+    }
+    save();
+    render();
+  }
+  function toggleStep(mission, step) {
+    if (isPreview()) return;
+    var c = dayChecks();
+    var k = mission.id + "#" + step;
+    if (c[k]) delete c[k]; else c[k] = true;
+    save();
+    render();
+  }
+
+  /* 오래된 체크 기록은 정리 (최근 45일만 보관) */
+  function pruneChecks() {
+    var keys = Object.keys(state.checks).sort();
+    while (keys.length > 45) {
+      delete state.checks[keys.shift()];
+    }
+  }
+
+  /* ---------- 스티커 ---------- */
+  function hasTodaySticker() {
+    var key = todayKey();
+    for (var i = 0; i < state.board.length; i++) {
+      if (state.board[i].key === key && !state.board[i].manual) return true;
+    }
+    return false;
+  }
+  function nextFace() { return FACES[state.board.length % FACES.length]; }
+  function randomRot() { return Math.round((Math.random() * 30 - 15) * 10) / 10; }
+
+  function giveSticker() {
+    if (isPreview()) return;
+    if (state.board.length >= BOARD_SIZE) { openCelebrate(); return; }
+    if (hasTodaySticker()) { toast("오늘 스티커 완료! 하루에 1번만 찍을 수 있어요 🛡️"); return; }
+    if (!todayMissions().length) { toast("오늘은 쉬는 날이에요! 스티커 대신 푹 쉬어요 🛡️"); return; }
+    if (countDone(todayMissions()) !== todayMissions().length) {
+      toast("오늘 미션을 다 하면 스티커를 받을 수 있어요! 🛡️");
+      return;
+    }
+    var face = nextFace();
+    state.board.push({ key: todayKey(), label: todayLabel(), face: face, rot: randomRot() });
+    animateIndex = state.board.length - 1;
+    save();
+    render();
+    showStamp(face);
+    if (state.board.length >= BOARD_SIZE) {
+      window.setTimeout(openCelebrate, 820);
+    }
+  }
+
+  function addStickerManually() {
+    if (state.board.length >= BOARD_SIZE) { toast("스티커판이 가득 찼어요! 상품을 받고 새 판을 시작해요."); return; }
+    state.board.push({ key: todayKey(), label: todayLabel(), face: nextFace(), rot: randomRot(), manual: true });
+    animateIndex = state.board.length - 1;
+    save();
+    render();
+    renderEditor();
+    toast("스티커 1개를 보충했어요 (지금 " + state.board.length + "/30)");
+    if (state.board.length >= BOARD_SIZE) window.setTimeout(openCelebrate, 320);
+  }
+
+  function removeStickerManually() {
+    if (!state.board.length) { toast("지울 스티커가 없어요."); return; }
+    var last = state.board[state.board.length - 1];
+    state.board.pop();
+    save();
+    render();
+    renderEditor();
+    toast("마지막 스티커(" + (last.label || "?") + ")를 지웠어요 (지금 " + state.board.length + "/30)");
+  }
+
+  function claimBoard() {
+    state.history.push({ date: todayLabel(), reward: state.reward, count: state.board.length });
+    state.boardsDone += 1;
+    state.board = [];
+    animateIndex = -1;
+    save();
+    render();
+    renderEditor();
+    closeCelebrate();
+    confetti(80);
+    toast("🏆 " + state.boardsDone + "번째 판 완성! 새 스티커판을 시작해요!");
+  }
+
+  function clearProgress() {
+    state.board = [];
+    state.checks = {};
+    state.boardsDone = 0;
+    state.history = [];
+    animateIndex = -1;
+    save();
+  }
+
+  /* ---------- 효과 ---------- */
+  function useNode(id) {
+    var use = document.createElementNS(SVGNS, "use");
+    use.setAttribute("href", "#" + id);
+    use.setAttributeNS(XLINKNS, "xlink:href", "#" + id);
+    return use;
+  }
+
+  function confetti(count) {
+    var layer = byId("confetti");
+    if (!layer) return;
+    var n = count || 80;
+    for (var i = 0; i < n; i++) {
+      var p = document.createElement("span");
+      p.className = "confetti-piece";
+      p.style.left = (Math.random() * 100).toFixed(2) + "vw";
+      p.style.background = CONFETTI_COLORS[i % CONFETTI_COLORS.length];
+      p.style.width = (7 + Math.random() * 7).toFixed(0) + "px";
+      p.style.height = (10 + Math.random() * 10).toFixed(0) + "px";
+      p.style.setProperty("--dx", (Math.random() * 180 - 90).toFixed(0) + "px");
+      p.style.setProperty("--spin", (Math.random() * 900 - 450).toFixed(0) + "deg");
+      p.style.animationDuration = (1.9 + Math.random() * 1.5).toFixed(2) + "s";
+      p.style.animationDelay = (Math.random() * 0.55).toFixed(2) + "s";
+      layer.appendChild(p);
+      (function (piece) {
+        window.setTimeout(function () { if (piece.parentNode) piece.parentNode.removeChild(piece); }, 4200);
+      })(p);
+    }
+  }
+
+  function showStamp(face) {
+    var layer = byId("stampLayer");
+    if (!layer) return;
+    layer.textContent = "";
+    var svg = document.createElementNS(SVGNS, "svg");
+    svg.setAttribute("viewBox", "0 0 100 100");
+    svg.setAttribute("class", "stamp-art-big");
+    svg.setAttribute("aria-hidden", "true");
+    svg.appendChild(useNode("face-" + face));
+    layer.appendChild(svg);
+
+    var word = document.createElement("span");
+    word.className = "stamp-word";
+    word.textContent = "출동!";
+    layer.appendChild(word);
+
+    window.setTimeout(function () { layer.textContent = ""; }, 950);
+  }
+
+  /* ---------- 화면 그리기 ---------- */
+  function buildRestCard(preview) {
+    var card = document.createElement("div");
+    card.className = "rest-card";
+
+    var emoji = document.createElement("span");
+    emoji.className = "rest-emoji";
+    emoji.setAttribute("aria-hidden", "true");
+    emoji.textContent = "🛋️";
+
+    var title = document.createElement("p");
+    title.className = "rest-title";
+    title.textContent = preview ? "이날은 미션 쉬는 날!" : "오늘은 미션 쉬는 날!";
+
+    var sub = document.createElement("p");
+    sub.className = "rest-sub";
+    sub.textContent = preview ? "푹 쉬고 다음 날 또 출동해요 🛡️" : "푹 쉬고 내일 또 출동해요 🛡️";
+
+    card.appendChild(emoji);
+    card.appendChild(title);
+    card.appendChild(sub);
+    return card;
+  }
+
+  function renderMissions() {
+    var list = byId("missionList");
+    if (!list) return;
+    var missions = viewMissions();
+    var preview = isPreview();
+    var total = missions.length;
+    var done = 0;
+    var i;
+
+    list.textContent = "";
+    if (preview) list.classList.add("preview");
+    else list.classList.remove("preview");
+
+    if (!total) list.appendChild(buildRestCard(preview));
+
+    for (i = 0; i < missions.length; i++) {
+      var m = missions[i];
+      var isDone = !preview && isMissionDone(m);
+      if (isDone) done += 1;
+
+      var card = document.createElement("div");
+      card.className = "mission" + (isDone ? " done" : "") + (preview ? " preview" : "");
+      card.setAttribute("role", "checkbox");
+      card.setAttribute("aria-checked", isDone ? "true" : "false");
+      if (preview) card.setAttribute("aria-disabled", "true");
+      card.setAttribute("tabindex", preview ? "-1" : "0");
+      card.setAttribute("data-mid", m.id);
+      card.setAttribute("aria-label", m.name + (preview ? ", 미리보기" : (isDone ? ", 완료" : ", 아직")));
+
+      var emoji = document.createElement("span");
+      emoji.className = "mission-emoji";
+      emoji.setAttribute("aria-hidden", "true");
+      emoji.textContent = m.emoji || "⭐";
+
+      var body = document.createElement("span");
+      body.className = "mission-body";
+      var name = document.createElement("span");
+      name.className = "mission-name";
+      name.textContent = m.name;
+      body.appendChild(name);
+
+      if (m.steps && m.steps.length) {
+        var steps = document.createElement("span");
+        steps.className = "steps";
+        for (var s = 0; s < m.steps.length; s++) {
+          var step = m.steps[s];
+          var on = !preview && isStepDone(m, step);
+          var chip = document.createElement("button");
+          chip.type = "button";
+          chip.className = "step" + (on ? " on" : "");
+          chip.setAttribute("data-mid", m.id);
+          chip.setAttribute("data-step", step);
+          chip.setAttribute("aria-pressed", on ? "true" : "false");
+          chip.setAttribute("aria-label", m.name + " " + step + "단계");
+          if (preview) {
+            chip.setAttribute("tabindex", "-1");
+            chip.setAttribute("aria-disabled", "true");
+          }
+          chip.textContent = step;
+          steps.appendChild(chip);
+        }
+        body.appendChild(steps);
+      }
+
+      var tick = document.createElement("span");
+      tick.className = "tick";
+      tick.setAttribute("aria-hidden", "true");
+      if (isDone) {
+        tick.textContent = "✓";
+      } else if (!preview && m.steps && m.steps.length) {
+        var doneSteps = 0;
+        for (var d = 0; d < m.steps.length; d++) { if (isStepDone(m, m.steps[d])) doneSteps += 1; }
+        if (doneSteps > 0) {
+          tick.textContent = doneSteps + "/" + m.steps.length;
+          tick.className = "tick partial";
+        }
+      }
+
+      card.appendChild(emoji);
+      card.appendChild(body);
+      card.appendChild(tick);
+      list.appendChild(card);
+    }
+
+    var progress = byId("missionProgress");
+    if (progress) progress.textContent = total ? (done + " / " + total) : "쉬는 날";
+  }
+
+  function renderMissionHead() {
+    var main = byId("missionTitleMain");
+    var tag = byId("missionDayTag");
+    if (main) main.textContent = isPreview() ? (dayName(viewDay) + " 미션") : "오늘의 미션";
+    if (tag) {
+      tag.textContent = isPreview() ? "" : " · " + dayName(viewDay);
+      tag.hidden = isPreview();
+    }
+
+    var note = byId("previewNote");
+    if (note) {
+      note.hidden = !isPreview();
+      if (isPreview()) {
+        note.textContent = "👀 " + dayName(viewDay) + " 미션 미리보기 · 체크 잠금 (체크는 오늘만 돼요)";
+      }
+    }
+
+    var tip = byId("missionTip");
+    if (tip) tip.hidden = isPreview() || !viewMissions().length;
+  }
+
+  function buildDayTabs(container, selectedDay, onPick) {
+    if (!container) return;
+    var today = todayDay();
+    container.textContent = "";
+    for (var i = 0; i < DAY_ORDER.length; i++) {
+      (function (d) {
+        var b = document.createElement("button");
+        b.type = "button";
+        b.className = "day-tab" + (d === selectedDay ? " on" : "") + (d === today ? " today" : "");
+        b.setAttribute("data-day", String(d));
+        b.setAttribute("role", "tab");
+        b.setAttribute("aria-selected", d === selectedDay ? "true" : "false");
+        b.setAttribute("aria-label", dayName(d) + (d === today ? " (오늘)" : ""));
+
+        var label = document.createElement("span");
+        label.className = "dt-label";
+        label.textContent = DAY_NAMES[d];
+        b.appendChild(label);
+
+        if (d === today) {
+          var dot = document.createElement("span");
+          dot.className = "dt-dot";
+          dot.setAttribute("aria-hidden", "true");
+          b.appendChild(dot);
+        }
+
+        b.addEventListener("click", function () { onPick(d); });
+        container.appendChild(b);
+      })(DAY_ORDER[i]);
+    }
+  }
+
+  function renderDayTabs() {
+    buildDayTabs(byId("dayTabs"), viewDay, function (d) {
+      if (viewDay === d) return;
+      viewDay = d;
+      render();
+    });
+  }
+
+  function renderBoard() {
+    var board = byId("board");
+    if (!board) return;
+    var frag = document.createDocumentFragment();
+
+    for (var i = 0; i < BOARD_SIZE; i++) {
+      var n = i + 1;
+      var entry = state.board[i];
+      var li = document.createElement("li");
+      li.className = "cell";
+      li.setAttribute("data-i", String(n));
+      if (MILESTONES[n]) li.classList.add("milestone");
+      if (n === BOARD_SIZE) li.classList.add("grand");
+
+      if (entry) {
+        var face = entry.face || FACES[i % FACES.length];
+        li.classList.add("filled");
+        li.style.setProperty("--tint", TINTS[face] || "#fff1d6");
+        li.style.setProperty("--rot", (Number(entry.rot) || 0) + "deg");
+
+        var art = document.createElementNS(SVGNS, "svg");
+        art.setAttribute("viewBox", "0 0 100 100");
+        art.setAttribute("class", "stamp-art");
+        art.setAttribute("aria-hidden", "true");
+        art.appendChild(useNode("face-" + face));
+        li.appendChild(art);
+
+        if (entry.label) {
+          var date = document.createElement("span");
+          date.className = "cell-date";
+          date.textContent = entry.label;
+          li.appendChild(date);
+        }
+        if (i === animateIndex) li.classList.add("pop");
+      } else {
+        var no = document.createElement("span");
+        no.className = "cell-no";
+        no.textContent = String(n);
+        li.appendChild(no);
+      }
+
+      if (MILESTONES[n]) {
+        var ms = document.createElement("span");
+        ms.className = "cell-ms";
+        ms.setAttribute("aria-hidden", "true");
+        ms.textContent = MILESTONES[n];
+        li.appendChild(ms);
+      }
+
+      li.setAttribute("aria-label", entry
+        ? n + "번째 칸, " + (entry.label || "") + " 어벤져스 스티커"
+        : n + "번째 칸, 비어 있음" + (n === BOARD_SIZE ? ", 상품 칸" : ""));
+      frag.appendChild(li);
+    }
+
+    board.textContent = "";
+    board.appendChild(frag);
+    animateIndex = -1;
+  }
+
+  function renderGoal() {
+    var n = state.board.length;
+    var pct = Math.round((n / BOARD_SIZE) * 100);
+
+    var fill = byId("goalFill");
+    if (fill) fill.style.width = pct + "%";
+    var count = byId("goalCount");
+    if (count) count.textContent = n + " / " + BOARD_SIZE;
+    var boardProgress = byId("boardProgress");
+    if (boardProgress) boardProgress.textContent = n + " / " + BOARD_SIZE;
+
+    var reward = byId("rewardText");
+    if (reward) reward.textContent = state.reward;
+    var note = byId("boardRewardNote");
+    if (note) note.textContent = state.reward;
+    var modalReward = byId("modalReward");
+    if (modalReward) modalReward.textContent = state.reward;
+
+    var trophy = byId("trophyBadge");
+    if (trophy) trophy.textContent = "🏆 달성한 판 " + state.boardsDone + "개";
+
+    var hero = byId("heroTitle");
+    if (hero) hero.textContent = state.title;
+    document.title = state.title;
+
+    var rewardInput = byId("rewardInput");
+    if (rewardInput && document.activeElement !== rewardInput) rewardInput.value = state.reward;
+    var titleInput = byId("titleInput");
+    if (titleInput && document.activeElement !== titleInput) titleInput.value = state.title;
+  }
+
+  /* 스티커 버튼은 항상 '오늘' 기준 (미리보기와 무관) */
+  function renderStickerArea() {
+    var btn = byId("stickerBtn");
+    var hint = byId("stickerHint");
+    if (!btn || !hint) return;
+
+    var missions = todayMissions();
+    var total = missions.length;
+    var done = countDone(missions);
+    var full = state.board.length >= BOARD_SIZE;
+    var stamped = hasTodaySticker();
+    var allDone = total > 0 && done === total;
+
+    btn.classList.remove("ready", "filled", "locked", "rest");
+    btn.removeAttribute("aria-disabled");
+    hint.classList.remove("done");
+
+    if (full) {
+      btn.disabled = false;
+      btn.classList.add("filled");
+      btn.textContent = "🎁 30개 대성공! 상품 확인하기";
+      hint.textContent = "스티커판이 가득 찼어요! 상품 받으러 출동! 🎁";
+      return;
+    }
+    if (!total) {
+      btn.disabled = true;
+      btn.classList.add("rest");
+      btn.textContent = "🛋️ 오늘은 쉬는 날이에요!";
+      hint.textContent = "쉬는 날엔 스티커 대신 푹 쉬어요 🛡️";
+      hint.classList.add("done");
+      return;
+    }
+
+    btn.textContent = "🛡️ 어벤져스 스티커 받기!";
+
+    if (stamped) {
+      btn.disabled = false;
+      btn.classList.add("locked");
+      btn.setAttribute("aria-disabled", "true");
+      btn.textContent = "🛡️ 오늘 스티커 완료!";
+      hint.textContent = "오늘 스티커 완료! 하루에 1번만 받을 수 있어요 🛡️";
+      hint.classList.add("done");
+      return;
+    }
+    if (allDone) {
+      btn.disabled = false;
+      btn.classList.add("ready");
+      hint.textContent = "준비 완료! 버튼을 눌러 스티커를 받아요! 🛡️";
+      return;
+    }
+
+    btn.disabled = true;
+    hint.textContent = "미션 " + (total - done) + "개만 더 하면 스티커!";
+  }
+
+  function render() {
+    renderDayTabs();
+    renderMissionHead();
+    renderMissions();
+    renderBoard();
+    renderGoal();
+    renderStickerArea();
+  }
+
+  /* ---------- 엄마 설정 ---------- */
+  function renderEditor() {
+    var box = byId("missionEditor");
+    if (!box) return;
+    box.textContent = "";
+
+    buildDayTabs(byId("editDayTabs"), editDay, function (d) {
+      if (editDay === d) return;
+      editDay = d;
+      renderEditor();
+    });
+
+    var note = byId("editDayNote");
+    if (note) note.textContent = dayName(editDay) + " 미션을 고치고 있어요";
+
+    var missions = missionsOf(editDay);
+
+    for (var idx = 0; idx < missions.length; idx++) {
+      (function (m, i) {
+        var row = document.createElement("div");
+        row.className = "edit-row";
+
+        var line = document.createElement("div");
+        line.className = "edit-line";
+
+        var em = document.createElement("input");
+        em.type = "text";
+        em.className = "edit-emoji";
+        em.value = m.emoji || "⭐";
+        em.maxLength = 4;
+        em.setAttribute("data-idx", String(i));
+        em.setAttribute("data-field", "emoji");
+        em.setAttribute("aria-label", "미션 아이콘");
+
+        var name = document.createElement("input");
+        name.type = "text";
+        name.className = "edit-name";
+        name.value = m.name;
+        name.maxLength = 20;
+        name.setAttribute("data-idx", String(i));
+        name.setAttribute("data-field", "name");
+        name.setAttribute("aria-label", "미션 이름");
+
+        var del = document.createElement("button");
+        del.type = "button";
+        del.className = "del-btn";
+        del.textContent = "🗑";
+        del.setAttribute("data-idx", String(i));
+        del.setAttribute("data-action", "delete");
+        del.setAttribute("aria-label", m.name + " 미션 삭제");
+
+        line.appendChild(em);
+        line.appendChild(name);
+        line.appendChild(del);
+        row.appendChild(line);
+
+        var steps = document.createElement("div");
+        steps.className = "edit-steps";
+        var lab = document.createElement("span");
+        lab.className = "edit-steps-label";
+        lab.textContent = "체크 방식";
+        steps.appendChild(lab);
+
+        var current = stepsCount(m);
+        for (var c = 1; c <= MAX_STEPS; c++) {
+          var pick = document.createElement("button");
+          pick.type = "button";
+          pick.className = "step-pick" + (c === current ? " on" : "");
+          pick.setAttribute("data-idx", String(i));
+          pick.setAttribute("data-action", "steps");
+          pick.setAttribute("data-count", String(c));
+          pick.setAttribute("aria-pressed", c === current ? "true" : "false");
+          pick.textContent = (c === 1) ? "한 번" : ("1·2" + (c >= 3 ? "·3" : "") + (c >= 4 ? "·4" : ""));
+          steps.appendChild(pick);
+        }
+        row.appendChild(steps);
+        box.appendChild(row);
+      })(missions[idx], idx);
+    }
+
+    if (!missions.length) {
+      var p = document.createElement("p");
+      p.className = "field-help";
+      p.textContent = dayName(editDay) + "은(는) 미션이 없는 쉬는 날이에요. 아래 칸에서 추가하거나 기본 요일표로 복원하세요.";
+      box.appendChild(p);
+    }
+
+    var plus = byId("plusStickerBtn");
+    if (plus) plus.disabled = state.board.length >= BOARD_SIZE;
+    var minus = byId("minusStickerBtn");
+    if (minus) minus.disabled = state.board.length === 0;
+  }
+
+  function openSettings() {
+    renderEditor();
+    var rewardInput = byId("rewardInput");
+    if (rewardInput) rewardInput.value = state.reward;
+    var titleInput = byId("titleInput");
+    if (titleInput) titleInput.value = state.title;
+    byId("settingsWrap").hidden = false;
+    document.body.style.overflow = "hidden";
+  }
+
+  function closeSettings() {
+    byId("settingsWrap").hidden = true;
+    document.body.style.overflow = "";
+    disarmFullReset();
+  }
+
+  function openCelebrate() {
+    if (state.board.length < BOARD_SIZE) return;
+    var modalReward = byId("modalReward");
+    if (modalReward) modalReward.textContent = state.reward;
+    byId("celebrateWrap").hidden = false;
+    document.body.style.overflow = "hidden";
+    confetti(110);
+  }
+
+  function closeCelebrate() {
+    byId("celebrateWrap").hidden = true;
+    document.body.style.overflow = "";
+  }
+
+  /* ---------- 어른 확인 ---------- */
+  var gateState = { answer: null, onPass: null, wrong: 0, timer: null };
+
+  function newGateQuestion() {
+    var a = 2 + Math.floor(Math.random() * 8);
+    var b = 2 + Math.floor(Math.random() * 8);
+    gateState.answer = a + b;
+    var q = byId("gateQuestion");
+    if (q) q.textContent = a + " + " + b + " =";
+  }
+
+  function openGate(onPass) {
+    gateState.onPass = (typeof onPass === "function") ? onPass : null;
+    gateState.wrong = 0;
+    newGateQuestion();
+    var input = byId("gateAnswer");
+    if (input) input.value = "";
+    var msg = byId("gateMsg");
+    if (msg) msg.textContent = "";
+    var wrap = byId("gateWrap");
+    if (wrap) wrap.hidden = false;
+    document.body.style.overflow = "hidden";
+    window.setTimeout(function () {
+      try { if (input) input.focus(); } catch (err) { /* 무시 */ }
+    }, 80);
+  }
+
+  function closeGate() {
+    var wrap = byId("gateWrap");
+    if (wrap) wrap.hidden = true;
+    gateState.answer = null;
+    gateState.onPass = null;
+    document.body.style.overflow = "";
+  }
+
+  function shakeGate() {
+    var modal = byId("gateModal");
+    if (!modal) return;
+    modal.classList.remove("shake");
+    void modal.offsetWidth;
+    modal.classList.add("shake");
+    window.clearTimeout(gateState.timer);
+    gateState.timer = window.setTimeout(function () { modal.classList.remove("shake"); }, 460);
+  }
+
+  function submitGate() {
+    var input = byId("gateAnswer");
+    var msg = byId("gateMsg");
+    var raw = input ? String(input.value).replace(/[^0-9]/g, "") : "";
+    if (!raw) {
+      if (msg) msg.textContent = "답을 적어 주세요.";
+      if (input) input.focus();
+      return;
+    }
+    if (parseInt(raw, 10) === gateState.answer) {
+      var cb = gateState.onPass;
+      closeGate();
+      if (cb) cb();
+      return;
+    }
+    gateState.wrong += 1;
+    if (gateState.wrong >= 3) {
+      if (msg) msg.textContent = "정답이 아니에요. 새 문제로 다시 해 볼까요?";
+      gateState.wrong = 0;
+      newGateQuestion();
+    } else if (msg) {
+      msg.textContent = "정답이 아니에요. 다시 계산해 볼까요?";
+    }
+    if (input) { input.value = ""; input.focus(); }
+    shakeGate();
+  }
+
+  /* ---------- 전체 초기화 (두 번 눌러 확인) ---------- */
+  var fullResetArmed = false;
+  var fullResetTimer = null;
+  var FULL_RESET_LABEL = "🔄 전체 초기화 (0부터 다시)";
+
+  function disarmFullReset() {
+    fullResetArmed = false;
+    var btn = byId("fullResetBtn");
+    if (!btn) return;
+    btn.classList.remove("armed");
+    btn.textContent = FULL_RESET_LABEL;
+  }
+
+  function onFullResetClick() {
+    var btn = byId("fullResetBtn");
+    if (!btn) return;
+    if (!fullResetArmed) {
+      fullResetArmed = true;
+      btn.classList.add("armed");
+      btn.textContent = "한 번 더 누르면 0개로 초기화돼요";
+      toast("한 번 더 누르면 스티커판이 0개로 초기화돼요");
+      window.clearTimeout(fullResetTimer);
+      fullResetTimer = window.setTimeout(disarmFullReset, 6000);
+      return;
+    }
+    window.clearTimeout(fullResetTimer);
+    disarmFullReset();
+    clearProgress();
+    render();
+    renderEditor();
+    toast("🔄 스티커판을 0부터 다시 시작해요! (0 / 30)");
+  }
+
+  function addMissionFromInput() {
+    var input = byId("newMissionName");
+    var name = input ? input.value.trim() : "";
+    var missions = missionsOf(editDay);
+    if (!name) { toast("미션 이름을 적어 주세요."); if (input) input.focus(); return; }
+    if (missions.length >= MAX_MISSIONS) { toast("미션은 요일마다 " + MAX_MISSIONS + "개까지만 넣을 수 있어요."); return; }
+    missions.push({
+      id: "m_" + Date.now().toString(36) + Math.floor(Math.random() * 1000),
+      emoji: "⭐",
+      name: name.slice(0, 20)
+    });
+    if (input) input.value = "";
+    save();
+    renderEditor();
+    render();
+    toast(dayName(editDay) + "에 '" + name.slice(0, 20) + "' 미션을 추가했어요.");
+  }
+
+  function resetMissions() {
+    state.schedule = defaultSchedule();
+    save();
+    renderEditor();
+    render();
+    toast("기본 요일표로 되돌렸어요 (월~일 7일 전체)");
+  }
+
+  function resetTodayChecks() {
+    state.checks[todayKey()] = {};
+    save();
+    render();
+    toast("오늘 미션 체크를 모두 지웠어요.");
+  }
+
+  /* ---------- 백업 / 복원 ---------- */
+  function exportJson() {
+    var box = byId("backupBox");
+    var text = JSON.stringify(state, null, 2);
+    if (box) box.value = text;
+    return text;
+  }
+
+  function copyText(text, okMsg) {
+    var box = byId("backupBox");
+    function done() { toast(okMsg); }
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(text).then(done, function () {
+        if (box) { box.focus(); box.select(); }
+        toast("복사가 안 되면 내용을 길게 눌러 직접 복사해 주세요.");
+      });
+    } else {
+      if (box) { box.focus(); box.select(); }
+      try { document.execCommand("copy"); done(); }
+      catch (err) { toast("내용을 길게 눌러 직접 복사해 주세요."); }
+    }
+  }
+
+  function saveBackupFile() {
+    var text = exportJson();
+    try {
+      var blob = new Blob([text], { type: "application/json" });
+      var url = URL.createObjectURL(blob);
+      var a = document.createElement("a");
+      a.href = url;
+      a.download = "미션판-백업-" + todayKey() + ".json";
+      document.body.appendChild(a);
+      a.click();
+      window.setTimeout(function () {
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+      }, 1500);
+      toast("백업 파일을 저장했어요. 다운로드 폴더를 확인해 주세요.");
+    } catch (err) {
+      toast("파일 저장이 안 되면 '내보내기'로 복사해 두세요.");
+    }
+  }
+
+  function importJson() {
+    var box = byId("backupBox");
+    var raw = box ? box.value.trim() : "";
+    if (!raw) { toast("붙여넣은 내용이 없어요. 백업 내용을 먼저 붙여넣어 주세요."); return; }
+    var parsed;
+    try { parsed = JSON.parse(raw); }
+    catch (err) { toast("백업 내용을 읽지 못했어요. 복사한 내용을 그대로 붙여넣어 주세요."); return; }
+    state = normalizeState(parsed);
+    save();
+    render();
+    renderEditor();
+    toast("백업을 가져왔어요! 스티커 " + state.board.length + "/30, 달성한 판 " + state.boardsDone + "개");
+  }
+
+  function loadBackupFile(file) {
+    if (!file) return;
+    var reader = new FileReader();
+    reader.onload = function () {
+      var box = byId("backupBox");
+      if (box) box.value = String(reader.result || "");
+      importJson();
+    };
+    reader.onerror = function () { toast("파일을 읽지 못했어요."); };
+    reader.readAsText(file);
+  }
+
+  /* ---------- 이벤트 ---------- */
+  function bindEvents() {
+    var list = byId("missionList");
+    if (list) {
+      list.addEventListener("click", function (ev) {
+        if (isPreview()) return;
+        var chip = ev.target.closest ? ev.target.closest(".step") : null;
+        if (chip) {
+          ev.stopPropagation();
+          var mission = findMission(viewMissions(), chip.getAttribute("data-mid"));
+          if (mission) toggleStep(mission, chip.getAttribute("data-step"));
+          return;
+        }
+        var card = ev.target.closest ? ev.target.closest(".mission") : null;
+        if (!card) return;
+        var target = findMission(viewMissions(), card.getAttribute("data-mid"));
+        if (target) toggleMission(target);
+      });
+
+      list.addEventListener("keydown", function (ev) {
+        if (ev.key !== "Enter" && ev.key !== " ") return;
+        if (isPreview()) return;
+        var card = ev.target.closest ? ev.target.closest(".mission") : null;
+        if (!card || ev.target !== card) return;
+        ev.preventDefault();
+        var target = findMission(viewMissions(), card.getAttribute("data-mid"));
+        if (target) toggleMission(target);
+      });
+    }
+
+    var stickerBtn = byId("stickerBtn");
+    if (stickerBtn) {
+      stickerBtn.addEventListener("click", function () {
+        if (state.board.length >= BOARD_SIZE) { openCelebrate(); return; }
+        if (hasTodaySticker()) {
+          toast("오늘 스티커 완료! 하루에 1번만 받을 수 있어요 🛡️");
+          return;
+        }
+        if (stickerBtn.disabled) return;
+        giveSticker();
+      });
+    }
+
+    var momBtn = byId("momBtn");
+    if (momBtn) momBtn.addEventListener("click", function () { openGate(openSettings); });
+
+    var gateOk = byId("gateOkBtn");
+    if (gateOk) gateOk.addEventListener("click", submitGate);
+    var gateCancel = byId("gateCancelBtn");
+    if (gateCancel) gateCancel.addEventListener("click", closeGate);
+
+    var gateAnswer = byId("gateAnswer");
+    if (gateAnswer) {
+      gateAnswer.addEventListener("keydown", function (ev) {
+        if (ev.key === "Enter") { ev.preventDefault(); submitGate(); }
+      });
+    }
+    var gateWrap = byId("gateWrap");
+    if (gateWrap) {
+      gateWrap.addEventListener("click", function (ev) {
+        if (ev.target === gateWrap) closeGate();
+      });
+    }
+
+    var fullResetBtn = byId("fullResetBtn");
+    if (fullResetBtn) fullResetBtn.addEventListener("click", onFullResetClick);
+
+    var closers = document.querySelectorAll("[data-close]");
+    for (var ci = 0; ci < closers.length; ci++) {
+      (function (el) {
+        el.addEventListener("click", function () {
+          if (el.closest(".sheet-wrap")) closeSettings();
+          else if (el.closest(".modal-wrap")) closeCelebrate();
+        });
+      })(closers[ci]);
+    }
+
+    var claimBtn = byId("claimBtn");
+    if (claimBtn) claimBtn.addEventListener("click", claimBoard);
+
+    var rewardInput = byId("rewardInput");
+    if (rewardInput) {
+      rewardInput.addEventListener("input", function () {
+        var v = rewardInput.value.trim();
+        state.reward = v || DEFAULT_REWARD;
+        saveSoon();
+        renderGoal();
+      });
+      rewardInput.addEventListener("blur", function () {
+        if (!rewardInput.value.trim()) {
+          rewardInput.value = DEFAULT_REWARD;
+          state.reward = DEFAULT_REWARD;
+          saveSoon();
+          renderGoal();
+        }
+      });
+    }
+
+    var titleInput = byId("titleInput");
+    if (titleInput) {
+      titleInput.addEventListener("input", function () {
+        var v = titleInput.value.trim();
+        state.title = v || DEFAULT_TITLE;
+        saveSoon();
+        renderGoal();
+      });
+      titleInput.addEventListener("blur", function () {
+        if (!titleInput.value.trim()) {
+          titleInput.value = DEFAULT_TITLE;
+          state.title = DEFAULT_TITLE;
+          saveSoon();
+          renderGoal();
+        }
+      });
+    }
+
+    var editor = byId("missionEditor");
+    if (editor) {
+      editor.addEventListener("input", function (ev) {
+        var el = ev.target;
+        var idx = parseInt(el.getAttribute("data-idx"), 10);
+        var field = el.getAttribute("data-field");
+        var missions = missionsOf(editDay);
+        if (isNaN(idx) || !field || !missions[idx]) return;
+        if (field === "name") {
+          missions[idx].name = el.value.slice(0, 20) || "미션";
+          saveSoon();
+          render();
+        } else if (field === "emoji") {
+          missions[idx].emoji = el.value.slice(0, 4) || "⭐";
+          saveSoon();
+          render();
+        }
+      });
+
+      editor.addEventListener("click", function (ev) {
+        var btn = ev.target.closest ? ev.target.closest("[data-action]") : null;
+        if (!btn) return;
+        var idx = parseInt(btn.getAttribute("data-idx"), 10);
+        var missions = missionsOf(editDay);
+        if (isNaN(idx) || !missions[idx]) return;
+
+        if (btn.getAttribute("data-action") === "delete") {
+          var removed = missions.splice(idx, 1)[0];
+          save();
+          renderEditor();
+          render();
+          toast("'" + removed.name + "' 미션을 지웠어요.");
+          return;
+        }
+        if (btn.getAttribute("data-action") === "steps") {
+          var count = parseInt(btn.getAttribute("data-count"), 10);
+          setStepsCount(missions[idx], count);
+          save();
+          renderEditor();
+          render();
+          toast(missions[idx].name + ": " + (count === 1 ? "한 번에 체크" : "1·2" + (count >= 3 ? "·3" : "") + (count >= 4 ? "·4" : "") + " 단계로 체크"));
+        }
+      });
+    }
+
+    var addBtn = byId("addMissionBtn");
+    if (addBtn) addBtn.addEventListener("click", addMissionFromInput);
+
+    var newName = byId("newMissionName");
+    if (newName) {
+      newName.addEventListener("keydown", function (ev) {
+        if (ev.key === "Enter") { ev.preventDefault(); addMissionFromInput(); }
+      });
+    }
+
+    var resetMissionsBtn = byId("resetMissionsBtn");
+    if (resetMissionsBtn) resetMissionsBtn.addEventListener("click", resetMissions);
+
+    var resetTodayBtn = byId("resetTodayBtn");
+    if (resetTodayBtn) resetTodayBtn.addEventListener("click", resetTodayChecks);
+
+    var plusBtn = byId("plusStickerBtn");
+    if (plusBtn) plusBtn.addEventListener("click", addStickerManually);
+    var minusBtn = byId("minusStickerBtn");
+    if (minusBtn) minusBtn.addEventListener("click", removeStickerManually);
+
+    var exportBtn = byId("exportBtn");
+    if (exportBtn) exportBtn.addEventListener("click", function () {
+      exportJson();
+      toast("백업 내용을 내보냈어요. 복사해서 보관하세요.");
+    });
+    var copyBtn = byId("copyBtn");
+    if (copyBtn) copyBtn.addEventListener("click", function () {
+      var text = exportJson();
+      copyText(text, "백업 내용을 복사했어요. 메모장에 붙여넣어 두세요.");
+    });
+    var importBtn = byId("importBtn");
+    if (importBtn) importBtn.addEventListener("click", importJson);
+
+    var saveFileBtn = byId("saveFileBtn");
+    if (saveFileBtn) saveFileBtn.addEventListener("click", saveBackupFile);
+    var loadFileBtn = byId("loadFileBtn");
+    var fileInput = byId("fileInput");
+    if (loadFileBtn && fileInput) {
+      loadFileBtn.addEventListener("click", function () { fileInput.click(); });
+      fileInput.addEventListener("change", function () {
+        if (fileInput.files && fileInput.files[0]) loadBackupFile(fileInput.files[0]);
+        fileInput.value = "";
+      });
+    }
+
+    document.addEventListener("keydown", function (ev) {
+      if (ev.key !== "Escape") return;
+      var gate = byId("gateWrap");
+      var celebrate = byId("celebrateWrap");
+      var settings = byId("settingsWrap");
+      if (gate && !gate.hidden) closeGate();
+      else if (celebrate && !celebrate.hidden) closeCelebrate();
+      else if (settings && !settings.hidden) closeSettings();
+    });
+  }
+
+  /* ---------- 시작 ---------- */
+  function init() {
+    load();
+    viewDay = todayDay();
+    editDay = todayDay();
+
+    var today = todayKey();
+    var changed = state.lastVisit && state.lastVisit !== today;
+    state.lastVisit = today;
+    pruneChecks();
+    save();
+
+    render();
+    renderEditor();
+    bindEvents();
+
+    if (changed) {
+      window.setTimeout(function () { toast("새로운 하루! 오늘도 출동 준비 완료! ⚡"); }, 420);
+    }
+    if (state.board.length >= BOARD_SIZE) {
+      window.setTimeout(openCelebrate, 600);
+    }
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", init);
+  } else {
+    init();
+  }
+
+  /* 백업·확인용 (읽기 전용) */
+  window.__jaeyun = {
+    getState: function () { return JSON.parse(JSON.stringify(state)); },
+    todayKey: todayKey,
+    todayDay: todayDay,
+    viewDay: function () { return viewDay; },
+    hasTodaySticker: hasTodaySticker,
+    defaultSchedule: function () { return defaultSchedule(); }
+  };
+})();
+</script>
+</body>
+</html>
