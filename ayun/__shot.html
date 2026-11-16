@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8" />
+<meta name="robots" content="noindex, nofollow" />
+<title>shot</title>
+<style>html,body{margin:0;padding:0;background:#fff}iframe{border:0;display:block}</style>
+</head>
+<body>
+<script>
+(function () {
+  "use strict";
+  var K = "ayun.missionboard.v1";
+  var p = new URLSearchParams(location.search);
+  var st = p.get("state") || "top";
+  var W = parseInt(p.get("w") || "390", 10);
+  var H = parseInt(p.get("h") || "1800", 10);
+
+  function pad(n) { return (n < 10 ? "0" : "") + n; }
+  var now = new Date();
+  function key(off) { var x = new Date(now.getTime() - off * 86400000); return x.getFullYear() + "-" + pad(x.getMonth() + 1) + "-" + pad(x.getDate()); }
+  function lab(off) { var x = new Date(now.getTime() - off * 86400000); return (x.getMonth() + 1) + "/" + x.getDate(); }
+  var FACES = ["heart", "star", "crown", "ribbon", "moon", "cloud", "flower", "magic"];
+  var ROTS = [-8, 5, -4, 9, -6, 3, -3, 7];
+
+  var state = {
+    version: 1,
+    title: "아윤 공주의 미션 대작전",
+    reward: "5,000원 받기",
+    checks: {},
+    board: [],
+    boardsDone: 0,
+    history: [],
+    lastVisit: null
+  };
+
+  if (st === "board" || st === "done" || st === "full") {
+    var n = st === "full" ? 30 : 7;
+    for (var i = 0; i < n; i++) {
+      state.board.push({
+        key: key(n - i),
+        label: lab(n - i),
+        face: FACES[i % FACES.length],
+        rot: ROTS[i % ROTS.length]
+      });
+    }
+    state.boardsDone = st === "full" ? 1 : 2;
+  }
+
+  if (st === "board") {
+    var c = {};
+    c["m_math2#1"] = true;
+    c["m_math2#2"] = true;
+    c["m_book#1"] = true;
+    c["m_book#2"] = true;
+    c["m_book#3"] = true;
+    c["m_phonics"] = true;
+    state.checks[key(0)] = c;
+  }
+
+  if (st === "done" || st === "full") {
+    var all = {};
+    all["m_math2#1"] = true; all["m_math2#2"] = true; all["m_math2#3"] = true;
+    all["m_book#1"] = true; all["m_book#2"] = true; all["m_book#3"] = true;
+    all["m_phonics"] = true; all["m_sight"] = true; all["m_engread"] = true;
+    state.checks[key(0)] = all;
+    state.lastVisit = key(0);
+  }
+
+  try {
+    localStorage.clear();
+    if (st !== "top") localStorage.setItem(K, JSON.stringify(state));
+  } catch (e) {}
+
+  var f = document.createElement("iframe");
+  f.id = "shotFrame";
+  f.style.width = W + "px";
+  f.style.height = H + "px";
+  f.src = "./index.html?shot=" + Date.now();
+  document.body.appendChild(f);
+})();
+</script>
+</body>
+</html>
