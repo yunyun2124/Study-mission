@@ -35,11 +35,12 @@
   };
 
   if (st === "board" || st === "done" || st === "full") {
-    var n = st === "full" ? 30 : 7;
+    var n = st === "full" ? 30 : (st === "done" ? 6 : 7);
     for (var i = 0; i < n; i++) {
+      var off = n - 1 - i;
       state.board.push({
-        key: key(n - i),
-        label: lab(n - i),
+        key: key(off),
+        label: lab(off),
         face: FACES[i % FACES.length],
         rot: ROTS[i % ROTS.length]
       });
