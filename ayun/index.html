@@ -184,6 +184,34 @@ button, .mission { touch-action: manipulation; }
 }
 .bolt { display: inline-block; animation: boltBlink 1.6s steps(1, end) infinite; }
 
+/* ===== 판 이동 버튼 ===== */
+.board-switch {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  max-width: 100%;
+  margin: 0 0 10px;
+  padding: 7px 14px 8px;
+  border-radius: 999px;
+  font-family: var(--font-title);
+  font-size: 14px;
+  line-height: 1.2;
+  letter-spacing: -0.2px;
+  color: #fff;
+  text-decoration: none;
+  white-space: nowrap;
+  text-shadow: 0 1px 0 rgba(120, 8, 12, 0.55);
+  background: linear-gradient(180deg, #ff7277, #d31f25);
+  border: 2px solid #ffe1e1;
+  box-shadow: 0 3px 0 #8f0b14, 0 7px 16px rgba(198, 42, 126, 0.22);
+  transition: transform 0.12s ease, box-shadow 0.12s ease;
+}
+.board-switch:active {
+  transform: translateY(2px);
+  box-shadow: 0 1px 0 #8f0b14, 0 3px 8px rgba(198, 42, 126, 0.18);
+}
+.board-switch .arw { font-size: 13px; opacity: 0.9; }
+
 /* ===== 목표 카드 ===== */
 .goal {
   display: flex;
@@ -1073,6 +1101,7 @@ button, .mission { touch-action: manipulation; }
   .sticker-btn { font-size: 21px; padding: 18px 12px; }
   .hero-title-label { font-size: 11px; letter-spacing: 1.8px; }
   .hero-title-main { font-size: 22px; letter-spacing: -0.6px; }
+  .board-switch { font-size: 13px; padding: 6px 12px 7px; }
   .board { gap: 5px; padding: 6px; }
   .cell-date { font-size: 9.5px; bottom: 1px; padding: 0 3px; border-width: 1px; }
   .cell .stamp-art { left: 1%; right: 1%; bottom: 26%; }
@@ -1267,6 +1296,7 @@ button, .mission { touch-action: manipulation; }
 
 <div class="app">
   <header class="hero">
+    <a class="board-switch" href="../">🛡️ 재윤 대원 판 <span class="arw" aria-hidden="true">→</span></a>
     <svg class="hero-badge" viewBox="0 0 100 100" role="img" aria-label="티니핑 왕관 배지">
       <circle cx="50" cy="50" r="46" fill="#ff5fae" />
       <circle cx="50" cy="50" r="39" fill="none" stroke="rgba(255,255,255,.6)" stroke-width="3" />
