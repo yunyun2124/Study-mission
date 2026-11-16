@@ -37,7 +37,7 @@
   if (st === "board" || st === "done" || st === "full") {
     var n = st === "full" ? 30 : (st === "done" ? 6 : 7);
     for (var i = 0; i < n; i++) {
-      var off = n - 1 - i;
+      var off = (st === "done") ? (n - i) : (n - 1 - i);
       state.board.push({
         key: key(off),
         label: lab(off),
