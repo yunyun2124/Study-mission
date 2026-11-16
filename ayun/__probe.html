@@ -79,132 +79,136 @@
     var d = f.contentDocument, win = f.contentWindow;
     var pass = 0, fail = 0;
     function check(name, cond, extra) {
-      if (cond) { pass++; log("  ✓ " + name); }
-      else { fail++; log("  ✗ " + name + (extra !== undefined ? "  [" + extra + "]" : "")); }
+      if (cond) { pass++; log("  \u2713 " + name); }
+      else { fail++; log("  \u2717 " + name + (extra !== undefined ? "  [" + extra + "]" : "")); }
     }
+    function E(id) { return d.getElementById(id); }
+    function cards() { return d.querySelectorAll(".mission"); }
+    function card(i) { return d.querySelectorAll(".mission")[i]; }
+    function cells() { return d.querySelectorAll(".cell"); }
+    function filled() { return d.querySelectorAll(".cell.filled"); }
 
-    log("\n[기능 검사]");
-    check("제목", d.title === "아윤 공주의 미션 대작전", d.title);
-    check("localStorage 키", Object.keys(win.localStorage).indexOf(KEY) !== -1, Object.keys(win.localStorage).join(","));
-    check("다른 보드 키 없음(재윤)", Object.keys(win.localStorage).indexOf("jaeyun.missionboard.v1") === -1);
-    check("오늘 요일 자동 선택", win.__ayun.viewDay() === todayDay(), win.__ayun.viewDay());
-    check("미션 5개", d.querySelectorAll(".mission").length === 5);
-    check("요일 탭 7개", d.querySelectorAll("#dayTabs .day-tab").length === 7);
-    check("스티커판 30칸", d.querySelectorAll(".cell").length === 30);
-    check("초기 스티커 버튼 잠김", read(d, "stickerBtn").disabled === true);
-    check("보상 문구", read(d, "rewardText").textContent === "5,000원 받기", read(d, "rewardText").textContent);
+    log("\n[\uae30\ub2a5 \uac80\uc0ac]");
+    check("\uc81c\ubaa9", d.title === "\uc544\uc724 \uacf5\uc8fc\uc758 \ubbf8\uc158 \ub300\uc791\uc804", d.title);
+    check("localStorage \ud0a4", Object.keys(win.localStorage).indexOf(KEY) !== -1, Object.keys(win.localStorage).join(","));
+    check("\ub2e4\ub978 \ubcf4\ub4dc \ud0a4 \uc5c6\uc74c", Object.keys(win.localStorage).indexOf("jaeyun.missionboard.v1") === -1);
+    check("\uc624\ub298 \uc694\uc77c \uc790\ub3d9 \uc120\ud0dd", win.__ayun.viewDay() === todayDay(), win.__ayun.viewDay());
+    check("\ubbf8\uc158 5\uac1c", cards().length === 5);
+    check("\uc694\uc77c \ud0ed 7\uac1c", d.querySelectorAll("#dayTabs .day-tab").length === 7);
+    check("\uc2a4\ud2f0\ucee4\ud310 30\uce78", cells().length === 30);
+    check("\ucd08\uae30 \uc2a4\ud2f0\ucee4 \ubc84\ud2bc \uc7a0\uae40", E("stickerBtn").disabled === true);
+    check("\ubcf4\uc0c1 \ubb38\uad6c", E("rewardText").textContent === "5,000\uc6d0 \ubc1b\uae30", E("rewardText").textContent);
 
     var names = [];
-    d.querySelectorAll(".mission-name").forEach(function (n) { names.push(n.textContent); });
-    check("미션 이름", names.join("|") === "2세수학 3장|책 3권 독서|슈퍼매직파닉스|사이트워드|영어독서", names.join("|"));
-    var m0 = d.querySelectorAll(".mission")[0];
-    var m1 = d.querySelectorAll(".mission")[1];
-    check("2세수학 3단계", m0.querySelectorAll(".step").length === 3);
-    check("책 3권 3단계", m1.querySelectorAll(".step").length === 3);
-    check("슈퍼매직파닉스 단일 체크", d.querySelectorAll(".mission")[2].querySelectorAll(".step").length === 0);
+    cards().forEach(function (n) { names.push(n.querySelector(".mission-name").textContent); });
+    check("\ubbf8\uc158 \uc774\ub984", names.join("|") === "2\uc138\uc218\ud559 3\uc7a5|\ucc45 3\uad8c \ub3c5\uc11c|\uc288\ud37c\ub9e4\uc9c1\ud30c\ub2c9\uc2a4|\uc0ac\uc774\ud2b8\uc6cc\ub4dc|\uc601\uc5b4\ub3c5\uc11c", names.join("|"));
+    check("2\uc138\uc218\ud559 3\ub2e8\uacc4", card(0).querySelectorAll(".step").length === 3);
+    check("\ucc45 3\uad8c 3\ub2e8\uacc4", card(1).querySelectorAll(".step").length === 3);
+    check("\uc288\ud37c\ub9e4\uc9c1\ud30c\ub2c9\uc2a4 \ub2e8\uc77c \uccb4\ud06c", card(2).querySelectorAll(".step").length === 0);
 
-    click(m0.querySelectorAll(".step")[0]);
-    await wait(120);
-    check("부분 체크 1/3", m0.querySelector(".tick").textContent === "1/3", m0.querySelector(".tick").textContent);
+    click(card(0).querySelectorAll(".step")[0]);
+    await wait(160);
+    check("\ubd80\ubd84 \uccb4\ud06c 1/3", card(0).querySelector(".tick").textContent === "1/3", card(0).querySelector(".tick").textContent);
 
-    click(m0);
-    await wait(150);
-    check("카드 클릭 = 전체 체크", m0.classList.contains("done"), m0.className);
+    click(card(0));
+    await wait(180);
+    check("\uce74\ub4dc \ud074\ub9ad = \uc804\uccb4 \uccb4\ud06c", card(0).classList.contains("done"), card(0).className);
 
-    for (var round = 0; round < 3; round++) {
-      var cards = d.querySelectorAll(".mission");
-      for (var i = 0; i < cards.length; i++) {
-        if (!cards[i].classList.contains("done")) click(cards[i]);
+    for (var round = 0; round < 5; round++) {
+      var doneAll = true;
+      for (var i = 0; i < 5; i++) { if (!card(i).classList.contains("done")) doneAll = false; }
+      if (doneAll) break;
+      for (var k = 0; k < 5; k++) {
+        if (!card(k).classList.contains("done")) { click(card(k)); await wait(120); break; }
       }
-      await wait(120);
     }
-    check("진행 5 / 5", read(d, "missionProgress").textContent === "5 / 5", read(d, "missionProgress").textContent);
-    check("준비 상태 버튼", read(d, "stickerBtn").disabled === false && read(d, "stickerBtn").classList.contains("ready"));
+    check("\uc9c4\ud589 5 / 5", E("missionProgress").textContent === "5 / 5", E("missionProgress").textContent);
+    check("\uc900\ube44 \uc0c1\ud0dc \ubc84\ud2bc", E("stickerBtn").disabled === false && E("stickerBtn").classList.contains("ready"));
 
-    click(read(d, "stickerBtn"));
-    await wait(500);
-    check("스티커 1개", d.querySelectorAll(".cell.filled").length === 1, d.querySelectorAll(".cell.filled").length);
+    click(E("stickerBtn"));
+    await wait(600);
+    check("\uc2a4\ud2f0\ucee4 1\uac1c", filled().length === 1, filled().length);
     var pill = d.querySelector(".cell-date");
-    check("날짜 표시 " + todayLabel(), !!pill && pill.textContent === todayLabel(), pill && pill.textContent);
-    check("판 진행 1 / 30", read(d, "boardProgress").textContent === "1 / 30", read(d, "boardProgress").textContent);
-    check("오늘 스티커 기록", win.__ayun.hasTodaySticker() === true);
+    check("\ub0a0\uc9dc \ud45c\uc2dc " + todayLabel(), !!pill && pill.textContent === todayLabel(), pill && pill.textContent);
+    check("\ud310 \uc9c4\ud589 1 / 30", E("boardProgress").textContent === "1 / 30", E("boardProgress").textContent);
+    check("\uc624\ub298 \uc2a4\ud2f0\ucee4 \uae30\ub85d", win.__ayun.hasTodaySticker() === true);
     var artUse = d.querySelector(".cell.filled .stamp-art use");
-    check("SVG 캐릭터 도장(href)", !!artUse && (artUse.getAttribute("href") || "").indexOf("#face-") === 0, artUse && artUse.getAttribute("href"));
+    check("SVG \uce90\ub9ad\ud130 \ub3c4\uc7a5", !!artUse && (artUse.getAttribute("href") || "").indexOf("#face-") === 0, artUse && artUse.getAttribute("href"));
 
-    click(read(d, "stickerBtn"));
+    click(E("stickerBtn"));
     await wait(300);
-    check("하루 1회 제한", d.querySelectorAll(".cell.filled").length === 1);
+    check("\ud558\ub8e8 1\ud68c \uc81c\ud55c", filled().length === 1);
 
     var tabs = d.querySelectorAll("#dayTabs .day-tab");
     var other = null;
     for (var t = 0; t < tabs.length; t++) { if (!tabs[t].classList.contains("on")) { other = tabs[t]; break; } }
     click(other);
-    await wait(200);
-    check("다른 요일 미리보기 안내", read(d, "previewNote").hidden === false);
-    check("미리보기 체크 잠금", d.querySelectorAll("#missionList.preview").length === 1);
+    await wait(250);
+    check("\ub2e4\ub978 \uc694\uc77c \ubbf8\ub9ac\ubcf4\uae30 \uc548\ub0b4", E("previewNote").hidden === false);
+    check("\ubbf8\ub9ac\ubcf4\uae30 \uccb4\ud06c \uc7a0\uae08", d.querySelectorAll("#missionList.preview").length === 1);
     var before = JSON.stringify(win.__ayun.getState().checks);
-    click(d.querySelectorAll(".mission")[0]);
-    await wait(150);
-    check("미리보기 클릭 무시", JSON.stringify(win.__ayun.getState().checks) === before);
-
-    click(read(d, "momBtn"));
+    click(card(0));
     await wait(200);
-    check("엄마 설정 잠금", read(d, "gateWrap").hidden === false);
-    var q = read(d, "gateQuestion").textContent.replace(/[^0-9+]/g, "");
+    check("\ubbf8\ub9ac\ubcf4\uae30 \ud074\ub9ad \ubb34\uc2dc", JSON.stringify(win.__ayun.getState().checks) === before);
+
+    click(E("momBtn"));
+    await wait(250);
+    check("\uc5c4\ub9c8 \uc124\uc815 \uc7a0\uae08", E("gateWrap").hidden === false);
+    var q = E("gateQuestion").textContent.replace(/[^0-9+]/g, "");
     var ab = q.split("+");
     var answer = parseInt(ab[0], 10) + parseInt(ab[1], 10);
-    check("한 자리 덧셈 문제", ab.length === 2 && parseInt(ab[0], 10) < 10 && parseInt(ab[1], 10) < 10, q);
-    read(d, "gateAnswer").value = String(answer + 1);
-    click(read(d, "gateOkBtn"));
-    await wait(200);
-    check("틀린 답 차단", read(d, "settingsWrap").hidden === true);
-    read(d, "gateAnswer").value = String(answer);
-    click(read(d, "gateOkBtn"));
-    await wait(400);
-    check("맞는 답에 설정 열림", read(d, "settingsWrap").hidden === false);
+    check("\ud55c \uc790\ub9ac \ub367\uc148 \ubb38\uc81c", ab.length === 2 && parseInt(ab[0], 10) < 10 && parseInt(ab[1], 10) < 10, q);
+    E("gateAnswer").value = String(answer + 1);
+    click(E("gateOkBtn"));
+    await wait(250);
+    check("\ud2c0\ub9b0 \ub2f5 \ucc28\ub2e8", E("settingsWrap").hidden === true);
+    E("gateAnswer").value = String(answer);
+    click(E("gateOkBtn"));
+    await wait(450);
+    check("\ub9de\ub294 \ub2f5\uc5d0 \uc124\uc815 \uc5f4\ub9bc", E("settingsWrap").hidden === false);
 
-    click(read(d, "plusStickerBtn"));
-    await wait(200);
-    check("+1 보충", read(d, "boardProgress").textContent === "2 / 30", read(d, "boardProgress").textContent);
-    click(read(d, "minusStickerBtn"));
-    await wait(200);
-    check("−1 취소", read(d, "boardProgress").textContent === "1 / 30", read(d, "boardProgress").textContent);
+    click(E("plusStickerBtn"));
+    await wait(250);
+    check("+1 \ubcf4\ucda9", E("boardProgress").textContent === "2 / 30", E("boardProgress").textContent);
+    click(E("minusStickerBtn"));
+    await wait(250);
+    check("\u22121 \ucde8\uc18c", E("boardProgress").textContent === "1 / 30", E("boardProgress").textContent);
 
-    click(read(d, "exportBtn"));
-    await wait(150);
+    click(E("exportBtn"));
+    await wait(200);
     var okJson = false;
-    try { okJson = JSON.parse(read(d, "backupBox").value).board.length === 1; } catch (e) { okJson = false; }
-    check("JSON 내보내기", okJson);
+    try { okJson = JSON.parse(E("backupBox").value).board.length === 1; } catch (err) { okJson = false; }
+    check("JSON \ub0b4\ubcf4\ub0b4\uae30", okJson);
 
     var editTabs = d.querySelectorAll("#editDayTabs .day-tab");
     for (var e2 = 0; e2 < editTabs.length; e2++) {
       if (editTabs[e2].getAttribute("data-day") === "2") { click(editTabs[e2]); break; }
     }
-    await wait(200);
-    read(d, "newMissionName").value = "받아쓰기";
-    click(read(d, "addMissionBtn"));
     await wait(250);
+    E("newMissionName").value = "\ubc1b\uc544\uc4f0\uae30";
+    click(E("addMissionBtn"));
+    await wait(300);
     var st = win.__ayun.getState();
-    check("요일별 추가(화 6개)", st.schedule["2"].length === 6, st.schedule["2"].length);
-    check("월요일은 5개 유지", st.schedule["1"].length === 5, st.schedule["1"].length);
+    check("\uc694\uc77c\ubcc4 \ucd94\uac00(\ud654 6\uac1c)", st.schedule["2"].length === 6, st.schedule["2"].length);
+    check("\uc6d4\uc694\uc77c\uc740 5\uac1c \uc720\uc9c0", st.schedule["1"].length === 5, st.schedule["1"].length);
 
-    read(d, "titleInput").value = "테스트 제목";
-    read(d, "titleInput").dispatchEvent(new Event("input", { bubbles: true }));
-    await wait(400);
-    check("제목 수정 반영", read(d, "heroTitle").textContent === "테스트 제목", read(d, "heroTitle").textContent);
+    E("titleInput").value = "\ud14c\uc2a4\ud2b8 \uc81c\ubaa9";
+    E("titleInput").dispatchEvent(new Event("input", { bubbles: true }));
+    await wait(450);
+    check("\uc81c\ubaa9 \uc218\uc815 \ubc18\uc601", E("heroTitle").textContent === "\ud14c\uc2a4\ud2b8 \uc81c\ubaa9", E("heroTitle").textContent);
 
-    read(d, "rewardInput").value = "3,000원 받기";
-    read(d, "rewardInput").dispatchEvent(new Event("input", { bubbles: true }));
-    await wait(400);
-    check("보상 수정 반영", read(d, "boardRewardNote").textContent === "3,000원 받기", read(d, "boardRewardNote").textContent);
+    E("rewardInput").value = "3,000\uc6d0 \ubc1b\uae30";
+    E("rewardInput").dispatchEvent(new Event("input", { bubbles: true }));
+    await wait(450);
+    check("\ubcf4\uc0c1 \uc218\uc815 \ubc18\uc601", E("boardRewardNote").textContent === "3,000\uc6d0 \ubc1b\uae30", E("boardRewardNote").textContent);
 
-    click(read(d, "fullResetBtn"));
-    await wait(150);
-    click(read(d, "fullResetBtn"));
-    await wait(400);
-    check("전체 초기화", read(d, "boardProgress").textContent === "0 / 30" && win.__ayun.getState().boardsDone === 0, read(d, "boardProgress").textContent);
+    click(E("fullResetBtn"));
+    await wait(200);
+    click(E("fullResetBtn"));
+    await wait(450);
+    check("\uc804\uccb4 \ucd08\uae30\ud654", E("boardProgress").textContent === "0 / 30" && win.__ayun.getState().boardsDone === 0, E("boardProgress").textContent);
 
-    log("\n결과 " + pass + " / " + (pass + fail));
+    log("\n\uacb0\uacfc " + pass + " / " + (pass + fail));
     summary.push("test:" + pass + "/" + (pass + fail));
     f.parentNode.removeChild(f);
   }
