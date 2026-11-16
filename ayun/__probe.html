@@ -1,0 +1,226 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8" />
+<meta name="robots" content="noindex, nofollow" />
+<title>measuring</title>
+<style>
+  body { margin: 0; background: #fff; color: #111; font: 15px/1.5 ui-monospace, Menlo, monospace; }
+  .box { padding: 10px 12px; }
+  h1 { font-size: 18px; margin: 0 0 6px; }
+  .line { white-space: pre-wrap; }
+  iframe { border: 0; display: block; }
+</style>
+</head>
+<body>
+<div class="box" id="out">measuring…</div>
+<script>
+(function () {
+  "use strict";
+  var SIZES = [{ w: 390, h: 844 }, { w: 375, h: 812 }];
+  var lines = [];
+  var summary = [];
+
+  function log(s) { lines.push(s); render(); }
+  function render() { document.getElementById("out").textContent = lines.join("\n"); }
+
+  function pad(n) { return (n < 10 ? "0" : "") + n; }
+  function todayKey() {
+    var d = new Date();
+    return d.getFullYear() + "-" + pad(d.getMonth() + 1) + "-" + pad(d.getDate());
+  }
+  function todayLabel() { var d = new Date(); return (d.getMonth() + 1) + "/" + d.getDate(); }
+  function todayDay() { return new Date().getDay(); }
+
+  function mkFrame(w, h) {
+    var f = document.createElement("iframe");
+    f.style.cssText = "width:" + w + "px;height:" + h + "px;border:0";
+    f.src = "./index.html?probe=" + Date.now();
+    return f;
+  }
+  function wait(ms) { return new Promise(function (r) { setTimeout(r, ms); }); }
+  function load(f) { return new Promise(function (r) { f.onload = function () { r(); }; }); }
+
+  function wideElements(d, win) {
+    var out = [];
+    var all = d.querySelectorAll("*");
+    for (var i = 0; i < all.length; i++) {
+      var el = all[i];
+      var r = el.getBoundingClientRect();
+      if (r.width > 0 && (r.right > win.innerWidth + 0.5 || r.left < -0.5)) {
+        var cls = el.className;
+        if (cls && cls.baseVal !== undefined) cls = cls.baseVal;
+        out.push(el.tagName + "." + cls + "[" + r.left.toFixed(0) + "," + r.right.toFixed(0) + "]");
+      }
+    }
+    return out.slice(0, 6);
+  }
+
+  async function measureStage() {
+    for (var i = 0; i < SIZES.length; i++) {
+      var s = SIZES[i];
+      var f = mkFrame(s.w, s.h);
+      document.body.appendChild(f);
+      await load(f);
+      await wait(1600);
+      var d = f.contentDocument, win = f.contentWindow;
+      var docSw = d.documentElement.scrollWidth;
+      var bodySw = d.body.scrollWidth;
+      var ov = docSw - win.innerWidth;
+      var wide = wideElements(d, win);
+      var cols = getComputedStyle(d.getElementById("board")).gridTemplateColumns;
+      summary.push(s.w + "px:overflow=" + ov);
+      log("[폭 " + s.w + "px] innerWidth=" + win.innerWidth + " scrollWidth=" + docSw +
+          " body.scrollWidth=" + bodySw + " overflow=" + ov +
+          "\n   넘치는 요소: " + (wide.length ? wide.join(" | ") : "없음") +
+          "\n   스티커판 열: " + cols + " · 미션 " + d.querySelectorAll(".mission").length +
+          "개 · 칸 " + d.querySelectorAll(".cell").length + "개 · 문서 높이 " + d.documentElement.scrollHeight);
+      f.parentNode.removeChild(f);
+    }
+  }
+
+  function click(el) {
+    el.dispatchEvent(new MouseEvent("click", { bubbles: true, cancelable: true, view: window }));
+  }
+
+  async function functionalStage() {
+    var KEY = "ayun.missionboard.v1";
+    var f = mkFrame(390, 844);
+    document.body.appendChild(f);
+    await load(f);
+    await wait(1200);
+    var d = f.contentDocument, win = f.contentWindow;
+    var pass = 0, fail = 0;
+    function check(name, cond, extra) {
+      if (cond) { pass++; log("  ✓ " + name); }
+      else { fail++; log("  ✗ " + name + (extra ? " — " + extra : "")); }
+    }
+
+    log("\n[기능 검사 · 실제 페이지 코드]");
+    try { win.localStorage.clear(); } catch (e) {}
+    f.contentWindow.location.reload();
+    await load(f);
+    await wait(1000);
+
+    check("제목", d.title === "아윤 공주의 미션 대작전", d.title);
+    check("localStorage 키", Object.keys(win.localStorage).indexOf(KEY) !== -1, Object.keys(win.localStorage).join(","));
+    check("오늘 요일 자동 선택", win.__ayun.viewDay() === todayDay(), String(win.__ayun.viewDay()));
+    check("미션 5개", d.querySelectorAll(".mission").length === 5, String(d.querySelectorAll(".mission").length));
+    check("요일 탭 7개", d.querySelectorAll("#dayTabs .day-tab").length === 7);
+    check("스티커판 30칸", d.querySelectorAll(".cell").length === 30);
+    check("처음엔 스티커 버튼 잠김", d.getElementById("stickerBtn").disabled === true);
+
+    var names = [];
+    d.querySelectorAll(".mission-name").forEach(function (n) { names.push(n.textContent); });
+    check("미션 이름", names.join("|") === "2세수학 3장|책 3권 독서|슈퍼매직파닉스|사이트워드|영어독서", names.join("|"));
+    var firstSteps = d.querySelectorAll(".mission")[0].querySelectorAll(".step").length;
+    check("2세수학 3단계", firstSteps === 3, String(firstSteps));
+
+    // 1단계만 체크
+    var chips = d.querySelectorAll(".mission")[0].querySelectorAll(".step");
+    click(chips[0]);
+    await wait(300);
+    check("부분 체크 표시 1/3", d.querySelectorAll(".mission")[0].querySelector(".tick").textContent === "1/3",
+      d.querySelectorAll(".mission")[0].querySelector(".tick").textContent);
+
+    // 모든 미션 체크
+    for (var round = 0; round < 4; round++) {
+      var cards = d.querySelectorAll(".mission");
+      for (var i = 0; i < cards.length; i++) {
+        if (!cards[i].classList.contains("done")) click(cards[i]);
+      }
+      await wait(250);
+    }
+    check("진행 5 / 5", d.getElementById("missionProgress").textContent === "5 / 5", d.getElementById("missionProgress").textContent);
+    check("스티커 버튼 켜짐", d.getElementById("stickerBtn").disabled === false && d.getElementById("stickerBtn").classList.contains("ready"));
+
+    // 스티커 받기
+    click(d.getElementById("stickerBtn"));
+    await wait(700);
+    var filled = d.querySelectorAll(".cell.filled").length;
+    check("스티커 1개 찍힘", filled === 1, String(filled));
+    var pill = d.querySelector(".cell-date");
+    check("날짜 표시 " + todayLabel(), !!pill && pill.textContent === todayLabel(), pill ? pill.textContent : "none");
+    check("스티커판 1 / 30", d.getElementById("boardProgress").textContent === "1 / 30", d.getElementById("boardProgress").textContent);
+    check("하루 1회 제한", win.__ayun.hasTodaySticker() === true);
+
+    // 미리보기 잠금
+    var tabs = d.querySelectorAll("#dayTabs .day-tab");
+    var other = null;
+    for (var t = 0; t < tabs.length; t++) { if (!tabs[t].classList.contains("on")) { other = tabs[t]; break; } }
+    click(other);
+    await wait(300);
+    check("다른 요일 미리보기 안내", d.getElementById("previewNote").hidden === false);
+    check("미리보기 체크 잠금", d.querySelectorAll("#missionList.preview").length === 1);
+    var before = JSON.stringify(win.__ayun.getState().checks);
+    click(d.querySelectorAll(".mission")[0]);
+    await wait(250);
+    check("미리보기 클릭 무시", JSON.stringify(win.__ayun.getState().checks) === before);
+
+    // 엄마 설정 게이트
+    click(d.getElementById("momBtn"));
+    await wait(300);
+    check("엄마 설정 잠금", d.getElementById("gateWrap").hidden === false);
+    var q = d.getElementById("gateQuestion").textContent.replace(/[^0-9+]/g, "");
+    var parts = q.split("+");
+    var answer = parseInt(parts[0], 10) + parseInt(parts[1], 10);
+    var ansInput = d.getElementById("gateAnswer");
+    ansInput.value = String(answer + 1);
+    click(d.getElementById("gateOkBtn"));
+    await wait(300);
+    check("틀린 답은 막힘", d.getElementById("settingsWrap").hidden === true);
+    ansInput.value = String(answer);
+    click(d.getElementById("gateOkBtn"));
+    await wait(500);
+    check("맞는 답에 설정 열림", d.getElementById("settingsWrap").hidden === false);
+
+    // +1 / -1
+    click(d.getElementById("plusStickerBtn"));
+    await wait(300);
+    check("+1 보충", d.getElementById("boardProgress").textContent === "2 / 30", d.getElementById("boardProgress").textContent);
+    click(d.getElementById("minusStickerBtn"));
+    await wait(300);
+    check("−1 취소", d.getElementById("boardProgress").textContent === "1 / 30", d.getElementById("boardProgress").textContent);
+
+    // 백업
+    click(d.getElementById("exportBtn"));
+    await wait(200);
+    var txt = d.getElementById("backupBox").value;
+    var okJson = false;
+    try { okJson = JSON.parse(txt).board.length === 1; } catch (e) { okJson = false; }
+    check("JSON 내보내기", okJson);
+
+    // 편집: 화요일에 미션 추가 후 그 요일만 바뀌는지
+    var editTabs = d.querySelectorAll("#editDayTabs .day-tab");
+    for (var e2 = 0; e2 < editTabs.length; e2++) {
+      if (editTabs[e2].getAttribute("data-day") === "2") { click(editTabs[e2]); break; }
+    }
+    await wait(250);
+    d.getElementById("newMissionName").value = "받아쓰기";
+    click(d.getElementById("addMissionBtn"));
+    await wait(300);
+    var st = win.__ayun.getState();
+    check("요일별 편집(화요일 6개)", st.schedule["2"].length === 6, String(st.schedule["2"].length));
+    check("다른 요일 그대로(월 5개)", st.schedule["1"].length === 5, String(st.schedule["1"].length));
+
+    var s2 = "../";
+    log("\n결과: " + pass + " 통과 / " + fail + " 실패");
+    summary.push("tests=" + pass + "/" + (pass + fail));
+    f.parentNode.removeChild(f);
+    return fail;
+  }
+
+  (async function () {
+    try {
+      await measureStage();
+      await functionalStage();
+    } catch (err) {
+      log("ERROR " + (err && err.message ? err.message : String(err)));
+      summary.push("error");
+    }
+    document.title = "RESULT " + summary.join(" | ");
+  })();
+})();
+</script>
+</body>
+</html>
