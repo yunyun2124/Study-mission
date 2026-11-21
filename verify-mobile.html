@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<title>mobile verify</title>
+<style>
+  body { margin: 0; background: #eef1f7; font: 13px/1.4 monospace; }
+  .row { display: flex; gap: 12px; align-items: flex-start; padding: 8px; }
+  iframe { border: 1px solid #999; background: #fff; }
+  pre { background: #fff; padding: 8px; margin: 8px; white-space: pre-wrap; }
+</style>
+</head>
+<body>
+<pre id="out">running…</pre>
+<div class="row">
+  <iframe id="f390" src="/Study-mission/?vp=390" width="390" height="844"></iframe>
+  <iframe id="f375" src="/Study-mission/?vp=375" width="375" height="844"></iframe>
+  <iframe id="f360" src="/Study-mission/?vp=360" width="360" height="844"></iframe>
+</div>
+<script>
+const NAMES = ["ironman","cap","thor","hulk","spidey","panther","marvel","antman","strange","wasp"];
+const sleep = (ms) => new Promise(r => setTimeout(r, ms));
+
+async function stickerCheck(doc) {
+  const out = [];
+  for (const n of NAMES) {
+    out.push(await new Promise(r => {
+      const im = new Image();
+      im.onload = () => r([n, im.naturalWidth]);
+      im.onerror = () => r([n, 0]);
+      im.src = new URL("stickers/" + n + ".webp?v=" + Math.random(), doc.baseURI).href;
+    }));
+  }
+  return out;
+}
+
+async function measure(id) {
+  const f = document.getElementById(id);
+  const doc = f.contentDocument;
+  await sleep(1200);
+  const win = f.contentWindow;
+  return {
+    id,
+    innerWidth: win.innerWidth,
+    docScrollWidth: doc.documentElement.scrollWidth,
+    bodyScrollWidth: doc.body.scrollWidth,
+    hasHScroll: doc.documentElement.scrollWidth > win.innerWidth,
+    stickers: await stickerCheck(doc),
+  };
+}
+
+(async () => {
+  const res = { frames: [] };
+  for (const id of ["f390", "f375", "f360"]) res.frames.push(await measure(id));
+
+  // --- add 10 stickers with the app's own "+1 보충" button in the 390 frame
+  const f = document.getElementById("f390");
+  const doc = f.contentDocument;
+  doc.getElementById("momBtn").click();
+  await sleep(700);
+  for (let i = 0; i < 10; i++) { doc.getElementById("plusStickerBtn").click(); await sleep(120); }
+  doc.querySelector(".sheet .x-btn").click();
+  await sleep(900);
+  // 375/360 frames show the same data - refresh their view
+  res.board = {
+    progress: doc.getElementById("boardProgress").textContent,
+    stamps: [...doc.querySelectorAll("li.cell.filled img.stamp-art")].map(im => ({
+      src: im.getAttribute("src"), naturalWidth: im.naturalWidth,
+      cssWidth: Math.round(im.getBoundingClientRect().width),
+      radius: getComputedStyle(im).borderRadius, fit: getComputedStyle(im).objectFit
+    })),
+    docScrollWidth: doc.documentElement.scrollWidth,
+    innerWidth: f.contentWindow.innerWidth
+  };
+  document.getElementById("out").textContent = JSON.stringify(res, null, 1);
+  document.title = "DONE " + (res.frames.every(x => !x.hasHScroll) ? "no-overflow" : "OVERFLOW");
+})();
+</script>
+</body>
+</html>
