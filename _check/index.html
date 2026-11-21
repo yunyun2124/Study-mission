@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>임시 검증</title>
+<style>
+  body { font-family: -apple-system, BlinkMacSystemFont, "Malgun Gothic", sans-serif; margin: 0; background: #eef1f7; }
+  .wrap { display: flex; gap: 12px; padding: 12px; align-items: flex-start; }
+  .box { background: #fff; border-radius: 10px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,.15); }
+  .box h3 { margin: 0; padding: 6px 10px; font-size: 13px; background: #1a2244; color: #fff; }
+  iframe { border: 0; display: block; }
+  pre { font-size: 12px; padding: 12px; white-space: pre-wrap; }
+  body.only .wrap { padding: 0; gap: 0; }
+  body.only pre, body.only .other { display: none; }
+</style>
+</head>
+<body>
+<pre id="out">measuring…</pre>
+<div class="wrap" id="wrap"></div>
+<script>
+var ts = Date.now();
+var widths = [390, 375, 360];
+var only = new URLSearchParams(location.search).get('only');
+if (only) { document.body.classList.add('only'); widths = [Number(only)]; }
+var results = {};
+var wrap = document.getElementById('wrap');
+widths.forEach(function (w) {
+  var box = document.createElement('div');
+  box.className = 'box' + (only ? '' : '');
+  box.innerHTML = '<h3>' + w + 'px</h3>';
+  var f = document.createElement('iframe');
+  f.width = w; f.height = only ? 844 : 800;
+  f.id = 'f' + w;
+  f.src = '/Study-mission/?v=' + ts + '#' + w;
+  box.appendChild(f);
+  wrap.appendChild(box);
+  f.addEventListener('load', function () { setTimeout(function () { measure(w, f); }, 2500); });
+});
+function measure(w, f) {
+  var d = f.contentDocument, win = f.contentWindow;
+  var imgs = Array.prototype.map.call(d.querySelectorAll('img'), function (im) {
+    return { src: im.currentSrc.split('/').pop().split('?')[0], nw: im.naturalWidth, shown: im.className };
+  });
+  var bad = imgs.filter(function (i) { return /webp$/.test(i.src) && i.nw === 0; });
+  var res = win.performance.getEntriesByType('resource');
+  var errs = res.filter(function (e) { return e.responseStatus >= 400; }).map(function (e) { return e.name.split('/').pop() + ':' + e.responseStatus; });
+  var stickerFiles = {};
+  res.forEach(function (e) { var m = e.name.match(/stickers\/([a-z]+\.webp)/); if (m) stickerFiles[m[1]] = e.responseStatus; });
+  results[w] = {
+    innerWidth: win.innerWidth,
+    docScroll: d.documentElement.scrollWidth,
+    bodyScroll: d.body.scrollWidth,
+    overflow: Math.max(d.documentElement.scrollWidth, d.body.scrollWidth) - win.innerWidth,
+    imgCount: imgs.length,
+    zeroWidthImgs: bad.map(function (i) { return i.src; }),
+    httpErrors: errs,
+    stickerStatus: stickerFiles
+  };
+  var o = document.getElementById('out');
+  o.textContent = JSON.stringify(results, null, 2);
+}
+</script>
+</body>
+</html>
