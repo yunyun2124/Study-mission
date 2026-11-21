@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="robots" content="noindex, nofollow" />
+<title>임시 검증 · 보너스 버튼/모바일 폭</title>
+<style>
+  body { margin: 0; padding: 12px; background: #101018; color: #eef; font-family: system-ui, sans-serif; }
+  h1 { font-size: 16px; margin: 0 0 8px; }
+  pre { font-size: 13px; line-height: 1.5; white-space: pre-wrap; background: #1b1b28; padding: 10px; border-radius: 8px; }
+  .frames { display: flex; gap: 10px; align-items: flex-start; flex-wrap: wrap; margin-top: 10px; }
+  .box { background: #23233a; padding: 4px; border-radius: 8px; }
+  .box p { margin: 2px 4px 6px; font-size: 12px; color: #cfd; }
+  iframe { border: 0; background: #fff; display: block; }
+</style>
+</head>
+<body>
+<h1>임시 검증 · 보너스 버튼 / 모바일 폭</h1>
+<pre id="log">측정 중…</pre>
+<div class="frames" id="frames"></div>
+<script>
+(function () {
+  var BOARDS = [
+    { name: "재윤", src: "./" },
+    { name: "아윤", src: "./ayun/" }
+  ];
+  var WIDTHS = [390, 375, 360];
+  var loaded = [];
+
+  function wait(ms) { return new Promise(function (r) { setTimeout(r, ms); }); }
+
+  function loadBoard(parent, board, width) {
+    var box = document.createElement("div");
+    box.className = "box";
+    box.setAttribute("data-board", board.name);
+    box.setAttribute("data-width", String(width));
+    var cap = document.createElement("p");
+    cap.textContent = board.name + " · " + width + "px";
+    var f = document.createElement("iframe");
+    f.width = width;
+    f.height = 1400;
+    f.src = board.src;
+    f.setAttribute("title", board.name + " " + width + "px");
+    box.appendChild(cap);
+    box.appendChild(f);
+    parent.appendChild(box);
+    return new Promise(function (resolve) {
+      f.addEventListener("load", function () { resolve(f); }, { once: true });
+    });
+  }
+
+  function measure(f) {
+    var d = f.contentDocument;
+    var de = d.documentElement;
+    var btns = Array.prototype.map.call(d.querySelectorAll(".board-actions button"), function (b) {
+      var r = b.getBoundingClientRect();
+      return {
+        label: b.textContent.trim(),
+        left: Math.round(r.left),
+        right: Math.round(r.right),
+        width: Math.round(r.width),
+        top: Math.round(r.top + window.scrollY)
+      };
+    });
+    return {
+      scrollW: de.scrollWidth,
+      clientW: de.clientWidth,
+      bodyScrollW: d.body.scrollWidth,
+      overflow: de.scrollWidth - de.clientWidth,
+      buttons: btns
+    };
+  }
+
+  async function run() {
+    var frames = document.getElementById("frames");
+    var results = [];
+    for (var i = 0; i < BOARDS.length; i++) {
+      for (var j = 0; j < WIDTHS.length; j++) {
+        var f = await loadBoard(frames, BOARDS[i], WIDTHS[j]);
+        await wait(700);
+        var m = measure(f);
+        m.board = BOARDS[i].name;
+        m.width = WIDTHS[j];
+        results.push(m);
+        var pre = document.getElementById("log");
+        pre.textContent = results.map(function (r) {
+          return r.board + " " + r.width + "px → scrollW " + r.scrollW + " / clientW " + r.clientW +
+            " / overflow " + r.overflow + "\n  buttons: " +
+            r.buttons.map(function (b) { return b.label + " [" + b.left + "–" + b.right + "]"; }).join("  ");
+        }).join("\n");
+      }
+    }
+    window.__verify = results;
+    document.getElementById("log").textContent += "\n\nDONE";
+  }
+
+  run();
+})();
+</script>
+</body>
+</html>
