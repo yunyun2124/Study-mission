@@ -664,7 +664,19 @@ button, .mission { touch-action: manipulation; }
   word-break: keep-all;
 }
 .board-note strong { color: var(--red); }
-.board-actions { display: flex; justify-content: center; margin-top: 10px; }
+.board-actions { display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 8px; margin-top: 10px; }
+.bonus-btn {
+  font-family: var(--font-title);
+  font-size: 16px;
+  color: #4a3100;
+  background: linear-gradient(180deg, #ffe9a8, #ffc93c);
+  border: 2px solid #e9b32a;
+  border-radius: 999px;
+  padding: 9px 18px 10px;
+  cursor: pointer;
+  box-shadow: 0 3px 0 #c98d00;
+}
+.bonus-btn:active { transform: translateY(2px); box-shadow: 0 1px 0 #c98d00; }
 .mom-btn {
   font-family: var(--font-title);
   font-size: 16px;
@@ -1187,6 +1199,7 @@ button, .mission { touch-action: manipulation; }
       <ol class="board" id="board" aria-label="어벤져스 스티커 30칸"></ol>
       <p class="board-note">30개를 다 모으면 <strong id="boardRewardNote">5,000원 받기</strong> 🎁</p>
       <div class="board-actions">
+        <button type="button" id="bonusBtn" class="bonus-btn">🎁 엄마 보너스 스티커</button>
         <button type="button" id="momBtn" class="mom-btn">⚙️ 엄마 설정</button>
       </div>
     </section>
@@ -1627,6 +1640,24 @@ button, .mission { touch-action: manipulation; }
     renderEditor();
     toast("스티커 1개를 보충했어요 (지금 " + state.board.length + "/30)");
     if (state.board.length >= BOARD_SIZE) window.setTimeout(openCelebrate, 320);
+  }
+
+  /* 엄마 보너스 스티커: 어른 확인(한 자리 덧셈)을 통과하면 바로 +1 */
+  function awardBonusSticker() {
+    if (state.board.length >= BOARD_SIZE) {
+      toast("스티커판이 가득 찼어요! 상품을 받고 새 판을 시작해요.");
+      openCelebrate();
+      return;
+    }
+    var face = nextFace();
+    state.board.push({ key: todayKey(), label: todayLabel(), face: face, rot: randomRot(), manual: true });
+    animateIndex = state.board.length - 1;
+    save();
+    render();
+    renderEditor();
+    showStamp(face);
+    toast("🎁 엄마 보너스 스티커 +1! (지금 " + state.board.length + "/30)");
+    if (state.board.length >= BOARD_SIZE) window.setTimeout(openCelebrate, 900);
   }
 
   function removeStickerManually() {
@@ -2419,6 +2450,9 @@ button, .mission { touch-action: manipulation; }
 
     var momBtn = byId("momBtn");
     if (momBtn) momBtn.addEventListener("click", function () { openGate(openSettings); });
+
+    var bonusBtn = byId("bonusBtn");
+    if (bonusBtn) bonusBtn.addEventListener("click", function () { openGate(awardBonusSticker); });
 
     var gateOk = byId("gateOkBtn");
     if (gateOk) gateOk.addEventListener("click", submitGate);
