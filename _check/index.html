@@ -35,7 +35,16 @@ widths.forEach(function (w) {
   f.src = '/Study-mission/?v=' + ts + '#' + w;
   box.appendChild(f);
   wrap.appendChild(box);
-  f.addEventListener('load', function () { setTimeout(function () { measure(w, f); }, 2500); });
+  var target = new URLSearchParams(location.search).get('target');
+  f.addEventListener('load', function () {
+    setTimeout(function () {
+      measure(w, f);
+      if (target) {
+        var el = f.contentDocument.getElementById(target);
+        if (el && el.scrollIntoView) el.scrollIntoView({ block: 'center' });
+      }
+    }, 2500);
+  });
 });
 function measure(w, f) {
   var d = f.contentDocument, win = f.contentWindow;
