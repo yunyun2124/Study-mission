@@ -36,12 +36,13 @@ widths.forEach(function (w) {
   box.appendChild(f);
   wrap.appendChild(box);
   var target = new URLSearchParams(location.search).get('target');
+  var blockMode = new URLSearchParams(location.search).get('block') || 'center';
   f.addEventListener('load', function () {
     setTimeout(function () {
       measure(w, f);
       if (target) {
         var el = f.contentDocument.getElementById(target);
-        if (el && el.scrollIntoView) el.scrollIntoView({ block: 'center' });
+        if (el && el.scrollIntoView) el.scrollIntoView({ block: blockMode });
       }
     }, 2500);
   });
