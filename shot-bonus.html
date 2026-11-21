@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="robots" content="noindex, nofollow" />
+<title>임시 캡처 · 보너스 버튼 390px</title>
+<style>
+  html, body { margin: 0; padding: 0; background: #101018; }
+  #win { position: fixed; left: 0; top: 0; width: 390px; height: 800px; overflow: hidden; }
+  #win iframe { position: absolute; left: 0; top: 0; width: 390px; border: 0; background: #fff; display: block; }
+  #note { position: fixed; left: 400px; top: 12px; color: #9fd; font: 13px system-ui, sans-serif; }
+</style>
+</head>
+<body>
+<div id="win"><iframe id="f" src="./" scrolling="no"></iframe></div>
+<p id="note">불러오는 중…</p>
+<script>
+(function () {
+  var b = new URLSearchParams(location.search).get("b") || "jaeyun";
+  var src = b === "ayun" ? "./ayun/" : "./";
+  var f = document.getElementById("f");
+  f.src = src;
+  f.addEventListener("load", function () {
+    var d = f.contentDocument;
+    var card = d.querySelector(".board-card");
+    var actions = d.querySelector(".board-actions");
+    var full = d.documentElement.scrollHeight;
+    f.style.height = full + "px";
+    var cardTop = card ? card.getBoundingClientRect().top : 0;
+    var cardH = card ? card.getBoundingClientRect().height : 0;
+    var winH = 800;
+    var offset = Math.max(0, Math.round(cardTop - (winH - cardH) / 2));
+    f.style.top = (-offset) + "px";
+    document.getElementById("note").textContent =
+      b + " · full " + full + "px · card top " + Math.round(cardTop) + " h " + Math.round(cardH) +
+      " · offset " + offset + " · actions " + (actions ? Math.round(actions.getBoundingClientRect().height) : "?");
+  }, { once: true });
+})();
+</script>
+</body>
+</html>
