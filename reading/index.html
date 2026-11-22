@@ -207,14 +207,28 @@ input,textarea,select{font-family:inherit;font-size:16px;color:var(--ink)}
 .mini-text b{font-weight:700;color:var(--ink-2)}
 
 /* 빈 상태 */
-.empty{
-  text-align:center;padding:34px 16px 26px;border-radius:20px;
+.empty{text-align:center;padding:0}
+.empty-card{
+  text-align:center;padding:30px 18px 24px;border-radius:20px;
   background:rgba(255,253,248,.6);border:1px dashed var(--line-2);
 }
 .empty .art{font-size:34px;line-height:1;margin-bottom:12px;filter:saturate(.75)}
 .empty h3{font-size:17px;font-weight:600;margin-bottom:6px}
 .empty p{font-size:13px;color:var(--ink-2);line-height:1.6}
 .empty .hint-line{font-size:11.5px;color:var(--ink-3);margin-top:12px}
+.guide{margin-top:16px;display:flex;flex-direction:column;gap:9px;text-align:left}
+.guide-step{
+  display:flex;gap:11px;align-items:flex-start;
+  background:rgba(255,253,248,.7);border:1px solid var(--line);
+  border-radius:14px;padding:12px 14px;box-shadow:var(--shadow-sm);
+}
+.guide-step .num{
+  flex:0 0 auto;width:22px;height:22px;border-radius:50%;
+  background:var(--terra-soft);color:var(--terra-deep);
+  font-size:11.5px;font-weight:700;display:grid;place-items:center;margin-top:1px;
+}
+.guide-step b{display:block;font-size:13px;font-weight:600;color:var(--ink)}
+.guide-step p{font-size:11.5px;color:var(--ink-3);line-height:1.55;margin-top:2px}
 
 /* ---------- 하단 버튼 ---------- */
 .bottom-bar{
@@ -527,7 +541,7 @@ input,textarea,select{font-family:inherit;font-size:16px;color:var(--ink)}
           <input type="file" id="coverInput" accept="image/*" hidden />
         </label>
         <div class="cover-edit-side">
-          <p>휴대폰 사진첩에서 표지를 고르거나, 책을 찍어 넣어도 좋아요.<br />사진은 400px로 줄여서 <b>이 기기 안에만</b> 저장돼요.</p>
+          <p>휴대폰 사진첩에서 표지를 고르거나, 책을 찍어 넣어도 좋아요. <br />사진은 400px로 줄여서 <b>이 기기 안에만</b> 저장돼요.</p>
           <button type="button" class="link-btn" id="coverClear" hidden>사진 지우기</button>
         </div>
       </div>
@@ -903,20 +917,31 @@ input,textarea,select{font-family:inherit;font-size:16px;color:var(--ink)}
 
     var shelf = $("#shelf");
     var empty = $("#emptyState");
+    $("#filterTabs").hidden = db.books.length === 0;
 
     if (!list.length){
       shelf.innerHTML = "";
       shelf.hidden = true;
       empty.hidden = false;
       if (!db.books.length){
-        empty.innerHTML = '<div class="art" aria-hidden="true">📚</div>' +
-          '<h3>아직 책장이 비어 있어요</h3>' +
-          '<p>읽고 있는 책 한 권을 담고,<br />오늘 읽은 쪽수부터 한 줄씩 남겨 보세요.</p>' +
-          '<p class="hint-line">표지 사진 · 매일 읽은 쪽수 · 기억에 남는 문장</p>';
+        empty.innerHTML =
+          '<div class="empty-card">' +
+            '<div class="art" aria-hidden="true">📚</div>' +
+            '<h3>아직 책장이 비어 있어요</h3>' +
+            '<p>읽고 있는 책 한 권을 담고,<br />오늘 읽은 쪽수부터 한 줄씩 남겨 보세요.</p>' +
+            '<p class="hint-line">표지 사진 · 매일 읽은 쪽수 · 기억에 남는 문장</p>' +
+          '</div>' +
+          '<div class="guide">' +
+            '<div class="guide-step"><span class="num">1</span><div><b>책을 담아요</b><p>표지 사진과 제목을 넣어 내 책장에 올려요.</p></div></div>' +
+            '<div class="guide-step"><span class="num">2</span><div><b>매일 읽은 만큼 기록해요</b><p>쪽수나 페이지 범위로 적으면 진행률이 저절로 쌓여요.</p></div></div>' +
+            '<div class="guide-step"><span class="num">3</span><div><b>마음에 남은 문장을 남겨요</b><p>짧은 메모가 쌓이면 나만의 독서 기록이 돼요.</p></div></div>' +
+          '</div>';
       } else {
-        empty.innerHTML = '<div class="art" aria-hidden="true">🔖</div>' +
+        empty.innerHTML = '<div class="empty-card">' +
+          '<div class="art" aria-hidden="true">🔖</div>' +
           '<h3>' + (ui.filter === "done" ? "완독한 책이 아직 없어요" : "읽는 중인 책이 없어요") + '</h3>' +
-          '<p>다른 탭에서 책을 확인해 보세요.</p>';
+          '<p>다른 탭에서 책을 확인해 보세요.</p>' +
+        '</div>';
       }
       return;
     }
