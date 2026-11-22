@@ -1087,6 +1087,7 @@ input,textarea,select{font-family:inherit;font-size:16px;color:var(--ink)}
     }
     ui.view = "shelf";
     ui.openBookId = null;
+    try { if (location.hash) history.replaceState(null, "", location.pathname + location.search); } catch(e){}
     render();
     window.scrollTo(0, 0);
   }
