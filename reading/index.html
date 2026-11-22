@@ -1079,17 +1079,23 @@ input,textarea,select{font-family:inherit;font-size:16px;color:var(--ink)}
   }
 
   function goShelf(fromPop){
-    ui.view = "shelf";
-    ui.openBookId = null;
     if (!fromPop && history.state && history.state.book){
       try { history.back(); return; } catch(e){}
     }
+    ui.view = "shelf";
+    ui.openBookId = null;
     render();
     window.scrollTo(0, 0);
   }
 
   window.addEventListener("popstate", function(){
-    if (ui.view === "detail"){ ui.view = "shelf"; ui.openBookId = null; render(); }
+    // 뒤로 가기: 기록해 둔 state 를 기준으로 화면을 다시 그립니다.
+    if (history.state && history.state.book){
+      ui.view = "detail"; ui.openBookId = history.state.book;
+    } else {
+      ui.view = "shelf"; ui.openBookId = null;
+    }
+    render();
   });
 
   /* ---------------- 시트 열고 닫기 ---------------- */
