@@ -170,12 +170,16 @@ input,textarea,select{font-family:inherit;font-size:16px;color:var(--ink)}
 .cover-ph{
   width:100%;height:100%;display:flex;flex-direction:column;
   align-items:center;justify-content:center;gap:8px;padding:14px 12px 14px 17px;
-  text-align:center;
+  text-align:center;position:relative;
 }
-.cover-ph .ph-icon{font-size:23px;opacity:.75;filter:saturate(.6)}
+.cover-ph::before{
+  content:"";position:absolute;inset:9px 9px 9px 15px;border-radius:2px;
+  border:1px solid rgba(43,38,33,.13);pointer-events:none;
+}
+.cover-ph .ph-icon{font-size:22px;opacity:.7;filter:saturate(.55)}
 .cover-ph .ph-title{
   font-family:var(--font-serif);font-size:12.5px;line-height:1.35;font-weight:600;
-  color:rgba(43,38,33,.72);
+  color:rgba(43,38,33,.74);
   display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;
   overflow-wrap:anywhere;
 }
@@ -308,8 +312,8 @@ input,textarea,select{font-family:inherit;font-size:16px;color:var(--ink)}
 .save-state.on{opacity:1}
 .panel textarea{
   width:100%;border:1px solid var(--line);border-radius:12px;background:var(--card-2);
-  padding:12px 13px;font-size:15px;line-height:1.65;resize:vertical;min-height:96px;
-  outline:none;transition:border-color .15s ease, background .15s ease;
+  padding:12px 13px;font-size:15px;line-height:1.65;resize:none;overflow:hidden;
+  min-height:96px;outline:none;transition:border-color .15s ease, background .15s ease;
 }
 .panel textarea:focus{border-color:var(--line-2);background:#FFFCF6;box-shadow:0 0 0 3px rgba(188,95,59,.07)}
 .panel textarea::placeholder{color:#B3A695}
@@ -371,6 +375,14 @@ input,textarea,select{font-family:inherit;font-size:16px;color:var(--ink)}
   border:1px solid var(--line);background:#FFFDF8;outline:none;
   transition:border-color .15s ease, box-shadow .15s ease;
 }
+.sheet-body textarea{
+  width:100%;border:1px solid var(--line);border-radius:12px;background:#FFFDF8;
+  padding:11px 13px;font-size:16px;line-height:1.6;resize:none;overflow:hidden;
+  min-height:84px;outline:none;
+  transition:border-color .15s ease, box-shadow .15s ease;
+}
+.sheet-body textarea:focus{border-color:#D9BFA0;box-shadow:0 0 0 3px rgba(188,95,59,.07)}
+.sheet-body textarea::placeholder{color:#B9AC9B}
 .field input:focus{border-color:#D9BFA0;box-shadow:0 0 0 3px rgba(188,95,59,.07)}
 .field input::placeholder{color:#B9AC9B}
 .field input:disabled{background:#F5EDE0;color:var(--ink-3)}
@@ -403,7 +415,7 @@ input,textarea,select{font-family:inherit;font-size:16px;color:var(--ink)}
 .preview-box .pbar i{display:block;height:100%;background:var(--forest);border-radius:3px;transition:width .25s ease}
 
 /* 표지 고르기 */
-.cover-edit{display:flex;gap:14px;align-items:flex-start;margin:6px 0 16px}
+.cover-edit{display:flex;gap:14px;align-items:flex-start;margin:6px 0 34px}
 .cover-picker{position:relative;flex:0 0 auto;display:block;width:88px;cursor:pointer}
 .cover-preview{
   width:88px;aspect-ratio:3/4;border-radius:9px;overflow:hidden;
@@ -703,6 +715,16 @@ input,textarea,select{font-family:inherit;font-size:16px;color:var(--ink)}
   }
   function clampStr(s, n){ s = String(s == null ? "" : s); return s.length > n ? s.slice(0, n) : s; }
 
+  // 메모 칸이 내용에 맞게 늘어나도록
+  function autoGrow(el, maxRatio){
+    if (!el) return;
+    var max = Math.round(window.innerHeight * (maxRatio || 0.42));
+    el.style.height = "auto";
+    var need = el.scrollHeight + 2;
+    el.style.height = Math.min(need, max) + "px";
+    el.style.overflowY = need > max ? "auto" : "hidden";
+  }
+
   function toast(msg, ms){
     var t = $("#toast");
     t.textContent = msg;
@@ -906,8 +928,8 @@ input,textarea,select{font-family:inherit;font-size:16px;color:var(--ink)}
       var prog = st.total
         ? Math.min(100, Math.round(st.pages / st.total * 100))
         : 0;
-      var bar = st.total || st.pages
-        ? '<div class="mini-bar"><i style="width:' + (st.total ? prog : 0) + '%"></i></div>' : "";
+      var bar = st.total
+        ? '<div class="mini-bar"><i style="width:' + prog + '%"></i></div>' : "";
       var line = st.total
         ? '<span><b>' + st.current + '</b> / ' + st.total + '쪽</span><span>' + prog + '%</span>'
         : (st.pages ? '<span>누적 <b>' + st.pages + '</b>쪽</span><span>' + st.logCount + '일</span>' : '<span>기록 전</span><span></span>');
@@ -1032,8 +1054,10 @@ input,textarea,select{font-family:inherit;font-size:16px;color:var(--ink)}
     var memo = $("#bookMemo");
     var state = $("#memoState");
     var tm = null;
+    autoGrow(memo, 0.46);
     memo.addEventListener("input", function(){
       b.memo = memo.value;
+      autoGrow(memo, 0.46);
       clearTimeout(tm);
       tm = setTimeout(function(){
         if (save(true)){ state.classList.add("on"); setTimeout(function(){ state.classList.remove("on"); }, 1400); }
@@ -1334,6 +1358,8 @@ input,textarea,select{font-family:inherit;font-size:16px;color:var(--ink)}
     }
     setLogMode(mode);
     openSheet("logSheet");
+    autoGrow($("#logNote"), 0.3);
+    requestAnimationFrame(function(){ autoGrow($("#logNote"), 0.3); });
   }
 
   function logPendingPages(){
@@ -1392,6 +1418,8 @@ input,textarea,select{font-family:inherit;font-size:16px;color:var(--ink)}
   ["logPages","logFrom","logTo","logCur"].forEach(function(id){
     $("#" + id).addEventListener("input", updateLogPreview);
   });
+
+  $("#logNote").addEventListener("input", function(){ autoGrow(this, 0.3); });
 
   $("#logSave").addEventListener("click", function(){
     var b = currentBook();
@@ -1468,7 +1496,7 @@ input,textarea,select{font-family:inherit;font-size:16px;color:var(--ink)}
     try { bytes = (localStorage.getItem(STORAGE_KEY) || "").length; } catch(e){}
     var kb = Math.round(bytes / 1024);
     $("#storageInfo").innerHTML = "지금 <b>책 " + books + "권 · 기록 " + logs + "개</b>" +
-      (kb ? " 를 약 " + kb + "KB로 저장 중이에요." : " 를 저장하고 있어요.");
+      (kb ? "를 약 " + kb + "KB로 저장 중이에요." : "를 저장하고 있어요.");
     openSheet("settingsSheet");
   });
 
