@@ -1060,9 +1060,12 @@ input,textarea,select{font-family:inherit;font-size:16px;color:var(--ink)}
       shelf.hidden = true; detail.hidden = false;
       renderDetail();
     } else {
-      detail.hidden = true; shelf.hidden = false;
+      detail.hidden = true;
+      detail.innerHTML = "";
+      shelf.hidden = false;
       $("#bottomBar").hidden = false;
       renderShelf();
+      window.scrollTo(0, 0);
     }
   }
 
