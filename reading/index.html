@@ -1196,7 +1196,14 @@ input,textarea,select{font-family:inherit;font-size:16px;color:var(--ink)}
           ctx.imageSmoothingQuality = "high";
           ctx.drawImage(img, (W - dw) / 2, (H - dh) / 2, dw, dh);
           var out = c.toDataURL("image/webp", 0.78);
-          if (out.indexOf("data:image/webp") !== 0) out = c.toDataURL("image/jpeg", 0.8);
+          if (out.indexOf("data:image/webp") !== 0){
+            // WebP 인코딩을 지원하지 않는 브라우저(구형 Safari 등)
+            out = c.toDataURL("image/jpeg", 0.8);
+          } else if (out.length < 6000){
+            // 단순한 배경 + 글자 위주 표지는 WebP가 너무 세게 압축해 글자가 뭉개질 수 있어
+            // 이때만 JPEG로 다시 인코딩합니다.
+            out = c.toDataURL("image/jpeg", 0.82);
+          }
           URL.revokeObjectURL(url);
           resolve(out);
         } catch (err){
